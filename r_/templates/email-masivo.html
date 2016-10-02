@@ -1,0 +1,32 @@
+<div class="modal fade" id="emailMasivo">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a>
+				<h4 class="modal-title">Envío masivo de e-mail</h4>
+			</div>
+			<div class="modal-body">
+				<form>				
+					<div class="form-group">
+						<label for="email-asunto">Asunto</label>
+						<input type="text" class="form-control" name="asunto" id="email-asunto" autofocus required>
+					</div>
+					<div class="form-group">
+						<label for="email-mensaje">Mensaje</label>
+						<textarea class="form-control" name="mensaje" id="email-mensaje" rows="8" required></textarea>
+					</div>
+					<input type="hidden" name="destinatario" id="email-destinatario" />
+					<input type="hidden" name="destinatario_valor" id="email-destinatario-valor" />
+					
+					<div class="alert alert-warning hidden" id="email-enviando"><i class="fa fa-spin fa-spinner"></i> Enviando mensaje...</div>
+					<div class="alert alert-success hidden" id="email-enviado"><i class="fa fa-check"></i> El mensajo ha sido enviado.</div>
+					<div class="alert alert-danger hidden" id="email-error"><i class="fa fa-warning"></i> Ha ocurrido un error.</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" id="email-cerrar"><i class="fa fa-remove"></i> Cerrar</button>
+				<button type="button" class="btn btn-primary" id="email-enviar"><i class="fa fa-envelope"></i> Enviar</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

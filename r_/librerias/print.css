@@ -1,0 +1,142 @@
+/* CSS Document */
+
+a{ color:#999999; text-decoration:none }
+img { border-style:none }
+
+*.cuadroAviso{
+color:#FFFF00
+}
+
+*.tablaPunteada, *.celdaPunteada {
+border-style:dashed;
+border-width:1px;
+border-color:#FFFFFF;
+}
+
+table.tbl_posiciones{
+text-align:center;
+
+border-top-style:solid;
+border-top-width:1px;
+border-left-style:solid;
+border-left-width:1px;
+}
+table.tbl_posiciones td{
+border-right-style:solid;
+border-right-width:1px;
+border-bottom-style:solid;
+border-bottom-width:1px;
+}
+
+/*	Tablas del formato de CEDULA para ARBITROS	*/
+*.cedula_completa {
+font-size:7pt;
+}
+*.tbl_cedula {
+border-color:#000000;
+
+border-top-style:solid;
+border-top-width:2px;
+border-left-style:solid;
+border-left-width:2px;
+}
+*.tbl_cedula td {
+font-size:7pt;
+padding:2px;
+
+border-bottom-style:solid;
+border-bottom-width:2px;
+border-right-style:solid;
+border-right-width:2px;
+
+padding-left:8px;
+padding-right:8px;
+text-align:center;
+}
+*.tbl_cedula td.label {
+font-size:7pt;
+font-weight:bold;
+}
+*.tbl_cedula_small td {
+font-size:7pt;
+padding-top:0px;
+padding-left:2px;
+padding-right:2px;
+padding-bottom:2px;
+}
+*.tbl_cedula_small table.tbl_cedula td {
+border-bottom-style:solid;
+border-bottom-width:2px;
+border-right-style:solid;
+border-right-width:2px;
+
+text-align:center;
+font-size:7pt;
+padding-left:0px;
+padding-right:0px;
+padding-bottom:1px;
+padding-top:1px;
+}
+*.tbl_cedula_goles td {
+font-size:7pt;
+padding-left:5px;
+padding-right:5px;
+
+border-bottom-style:solid;
+border-bottom-width:2px;
+border-right-style:solid;
+border-right-width:2px;
+text-align:center;
+}
+*.tbl_cedula_goles td.gol {
+font-size:7pt;
+text-align:right;
+padding-right:2px;
+padding-bottom:1px;
+vertical-align:bottom;
+width:30px;
+}
+*.cedula_bottom {
+font-size:6pt;
+}
+tr.tr_jugadores td{
+font-size:8pt;
+padding-top:1px;
+}
+tr.tr_jugadores{
+border-left-style:solid;
+border-left-width:2px;
+border-left-color:#000000;
+}
+/*	======	*/
+
+/* Seccion de ANUNCIOS */
+tr.lineaAnuncio td{
+	border-bottom:1px solid #CCCCCC;
+}
+.anuncioDer {
+margin:3px 0px 0px 0px;
+border:1px solid #000000;
+}
+
+.encMenuAdmin {
+	border:1px solid #CCCCCC; background-color:#FFCC99;
+	color:#000000;
+	font-weight:normal;
+}
+.elemMenuAdmin {
+	border:1px solid #CCCCCC;
+	border-top:none;
+	padding:2px 3px 2px 5px;
+}
+
+*.tablaGolesJornada{ 
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-size:7px;
+}
+
+
+#cont_encutesta_jugadores{ width:400px; margin:0 auto;}
+
+.tipo_jugador{ border:1px solid #FFF; margin-bottom:2px; padding:0 10px;}
+.tipo_jugador h3{ text-transform:capitalize;}

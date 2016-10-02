@@ -1,0 +1,1 @@
+<div class="alert alert-warning">No se encontraron registros que coincidan con los parámetros seleccionados.</div>

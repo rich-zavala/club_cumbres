@@ -1,0 +1,1 @@
+<div class="alert alert-info"><b>Bienvenido al administrador de categor&iacute;as.</b><br>Elija una opci&oacute;n del men&uacute; lateral.</div>

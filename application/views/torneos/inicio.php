@@ -1,0 +1,1 @@
+<div class="alert alert-info"><b>Bienvenido al administrador de torneos.</b><br>Elija una opción del menú lateral.</div>

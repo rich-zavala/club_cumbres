@@ -1,0 +1,99 @@
+@media(min-width:768px) {
+	#sideToogle {
+		display: block !important;
+		border-bottom: 1px solid #e7e7e7;
+		padding: 2px 0;
+		text-align: right;
+	}
+	
+	#sideToogle a {
+		display: inline-block;
+		padding: 2px 8px;
+	}
+	
+	.navbar-default.sidebar.sbHide{
+		margin-left: -202px;
+	}
+	.navbar-default.sidebar.sbHide ul{ display: none; }
+
+	#page-wrapper.sbHide{
+		margin-left: 28px;
+	}
+}
+#sideToogle{ display: none; }
+
+.fontSmall{ font-size: 13px; }
+.font11{ font-size: 11px; }
+.padding0{ padding: 0px !important }
+.padding5{ padding: 5px !important }
+.paddingLeft10{ padding-left: 10px !important; }
+.paddingLeft15{ padding-left: 15px !important; }
+.paddingLeft20{ padding-left: 20px !important; }
+.paddingRight10{ padding-right: 10px !important; }
+.paddingRight20{ padding-right: 20px !important; }
+.paddingTop5{ padding-top: 5px }
+.paddingTop10{ padding-top: 10px }
+.paddingBottom5{ padding-bottom: 5px }
+.margin0{ margin: 0px }
+.marginLeft0{ margin-left: 0px !important }
+.marginLeft10{ margin-left: 10px !important }
+.marginLeft20{ margin-left: 20px }
+.marginRight10{ margin-right: 10px !important }
+.marginRight20{ margin-right: 20px }
+.marginBottom10{ margin-bottom: 10px }
+.marginBottom20{ margin-bottom: 20px }
+.marginBottom0{ margin-bottom: 0px }
+.marginBottom5{ margin-bottom: 5px }
+.marginTop0{ margin-top: 0px }
+.marginTop10{ margin-top: 10px }
+.marginTop20{ margin-top: 20px }
+.marginTop30{ margin-top: 30px }
+.w100{ width: 100%; }
+.wAuto{ width: auto; }
+.table-border-top thead tr th{ border-top: 2px solid #ddd !important; }
+.menuSecundario .panel-heading{ font-weight: bold; }
+.negritas{ font-weight: bold; }
+.normal{ font-weight: normal; }
+.ln1 { line-height: 1; }
+.help-block.with-errors{
+	font-size: .85em;
+	margin-bottom: 0;
+}
+.help-block.with-errors ul{ margin-bottom: 0; }
+.menuSecundario .panel-heading, .menuSecundario .list-group-item{
+	padding: 4px 10px;
+  font-size: 12px;
+}
+.btn.badge{
+  font-weight: normal;
+  padding: 2px 10px;
+	min-width: 70px;
+}
+
+.cat-equipos{
+	padding-top: 5px;
+	transition: all .5s;
+}
+.cat-equipos:hover{ background-color: #f5f5f5; }
+.cat-equipos .btn{ margin-top: -2px; }
+.btn-group-circle { display: flex; }
+.table.table-middle TD, .table.table-middle TH{ vertical-align: middle; }
+.tabla-fecha{ width: 200px; display: inline-block; }
+.tabla-cancha{ width: 52px; display: inline-block; }
+.tabla-botones{ width: 86px; }
+.tabla-info{ width: 350px; }
+
+.inputSmall
+{
+	margin: auto;
+	width: 70px;
+}
+
+.puntajeJugador {
+  display: inline-block;
+}
+.partidoPuntaje{
+	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
