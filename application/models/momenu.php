@@ -41,6 +41,7 @@ class Momenu extends CI_Model
 				),
 				
 				array('Publicidad', 'copy', base() . 'publicidad/lista' . suffix()),
+				array('Árbitros', 'male', base() . 'arbitros/listado' . suffix()),
 				array('Administrar', 'gear', '#',
 					array(
 						array('Usuarios', 'user', base() . 'usuario/lista' . suffix()),

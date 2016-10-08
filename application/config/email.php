@@ -11,3 +11,5 @@ $config['smtp_host'] = 'localhost';
 $config['charset'] = 'utf-8';
 $config['wordwrap'] = TRUE;
 $config['mailtype'] = 'html';
+$config['smtp_port'] = 2525;
+$config['newline']    = "\r\n";

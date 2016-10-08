@@ -39,11 +39,20 @@ class Mocomun extends CI_Model
 			$t = $this->motorneos->init();
 			$t->id($this->id);
 		}
+
+		if($this->tabla == 'arbitros' or $this->tabla == 'config')
+		{			
+			$this->load->model('moarbitros');
+			$t = $this->moarbitros->init();
+			$t->id($this->id);
+		}
 		
 		//Retorno de información según tabla
 		switch($this->tabla)
 		{
 			case 'torneos':
+				return (int)$t->info()->{$this->campo};
+			case 'arbitros':
 				return (int)$t->info()->{$this->campo};
 			case 'config': //Switch de inscripciones
 				$config = $t->config();

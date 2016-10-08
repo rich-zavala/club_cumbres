@@ -65,12 +65,8 @@ class Mopartido extends CI_Model
 	{
 		if(!$this->pendiente)
 		{
-			// $w = "FechaHora BETWEEN '{$this->fecha}' AND ('{$this->fecha}' + INTERVAL {$this->duracion[$this->cancha]} MINUTE) AND ID_Partido != {$this->id}";
 			$w = "FechaHora BETWEEN '{$this->fecha}' AND ('{$this->fecha}' + INTERVAL {$this->duracion[$this->cancha]} MINUTE) AND ID_Partido != {$this->id}";
 			$q = $this->db->select('ID_Partido')->where('TipoCancha', $this->cancha)->where($w)->get('partidos');
-			// p($this->db->last_query());
-			// p($q->num_rows());
-			// p($this->limite[$this->cancha]);
 			return $q->num_rows() < $this->limite[$this->cancha];
 		} else return true;
 	}

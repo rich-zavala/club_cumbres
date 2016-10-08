@@ -35,7 +35,7 @@ if($registros_cantidad > 0)
 </table>
 <?php
 }
-else echo "<div class='alert alert-warning'><i class='fa fa-info-circle'></i> No hay registros actualmente</di>";
+else echo "<div class='alert alert-warning'><i class='fa fa-info-circle'></i> No hay registros actualmente</div>";
 
 //Mostrar formulario de edición / creación
 echo $formularioTorneo;
