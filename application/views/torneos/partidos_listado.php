@@ -25,15 +25,15 @@
 				<li role="presentation" class="dropdown-header marginTop10">Acciones para esta categoría</li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="tablaPosiciones" data-categoria="<?=$categoria->ID_CatTorn?>"><i class="fa fa-fw fa-table"></i> Tabla de posiciones</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="btn-email-masivo" data-destino="categoria" data-destino-valor="<?=$categoria->ID_CatTorn?>"><i class="fa fa-fw fa-envelope"></i> Enviar e-mail masivo</a></li>
-				
-				
+
+
 				<!--<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:alert('En construcción...')"><i class="fa fa-archive"></i> Guardar historial</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:alert('En construcción...')"><i class="fa fa-power-off"></i> Limpiar puntuaciones totales</a></li>-->
 			</ul>
 		</div>
 		<?php
 		}
-		
+
 		if(!$sinEquipos)
 		{
 		?>
@@ -44,7 +44,7 @@
 	</div>
 	<?php if(isset($grupo_actual)){ ?><div class="marginBottom-15 marginTop5 font12 text-right text-muted">Este grupo es <?=$grupo_actual->Es_Public == 1 ? 'público' : 'privado'?></div><?php } ?>
 </div>
-		
+
 <h2 class="marginBottom0"><i class="fa fa-futbol-o"></i> Partidos</h2>
 <div class="clearfix"></div>
 <hr>
@@ -94,17 +94,17 @@
 						$editable = false;
 						$puntaje1 = (int)$partido->equipos[0]['puntaje'];
 						$puntaje2 = (int)$partido->equipos[1]['puntaje'];
-						
+
 						if($puntaje1 > $puntaje2) $ganador1 = '<i class="fa fa-trophy marginRight10" title="Equipo ganador"></i>';
 						if($puntaje2 > $puntaje1) $ganador2 = '<i class="fa fa-trophy marginLeft10" title="Equipo ganador"></i>';
-						
+
 						if($partido->ganoSO == $partido->equipos[0]['id']) $ganador1 = '<i class="fa fa-trophy marginRight10" title="Ganador por shoot outs"></i> <span class="font11">(S.O.)</span>';
 						if($partido->ganoSO == $partido->equipos[1]['id']) $ganador2 = '<i class="fa fa-trophy marginLeft10" title="Ganador por shoot outs"></i> <span class="font11">(S.O.)</span>';
 					}
 					$href = base() . "torneo/partidos/puntaje/{$torneo}/{$categoria->ID_CatTorn}/{$grupo_actual->ID_VueltaGpo}/{$partido->ID_Partido}" . suffix();
 			?>
 				<tr>
-					<td>					
+					<td>
 						<div class="row marginLeft0">
 							<div class="col-xs-5 text-right">
 								<div class="row">
@@ -131,11 +131,11 @@
 							<a type="button" class="btn btn-xs btn-warning partido-eliminar" title="Eliminar partido" data-id="<?=$partido->ID_Partido?>" data-jornada="<?=$jornada->ID_Jornada?>"><i class="fa fa-remove"></i></a>
 						</div>
 					</td>
-					
+
 				</tr>
 			<?php
 				}
-				
+
 				foreach($jornada->descansos as $descanso)
 				{
 			?>
@@ -269,26 +269,72 @@
 									<input type="text" class="form-control date" id="formFecha" name="partidoFecha" data-minlength="10" data-error="Especifique la fecha del partido" readonly required>
 								</div>
 							</div>
-							<div class="col-xs-6">							
+							<div class="col-xs-6">
 								<div class="form-group marginBottom0">
 									<label for="formHora">Hora</label>
 									<input type="text" class="form-control time" id="formHora" name="partidoHora" data-minlength="8" data-error="Especifique la hora del partido" required>
+                  <div class="help-block with-errors"></div>
 								</div>
 							</div>
-							<!--<div class="col-xs-4">							
-								<div class="form-group marginBottom0">
-									<label for="publicar">Publicar</label>
-									<select id="publicar" name="publicar" class="form-control">
-										<option value="0">No</option>
-										<option value="1">Sí</option>
-								</select>
-								</div>
-							</div>-->
 						</div>
 					</div>
-					<!--<input type="hidden" id="formPartidoJornada" name="idjorn" />-->
+          <hr>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label for="formArbitro1" class="col-sm-3 control-label text-left">Árbitro central</label>
+                  <div class="col-sm-9">
+                    <select type="text" class="form-control" id="formArbitro1" name="formArbitro1" data-error="Especifique el árbitro central" required>
+              				<option value="">-- Ninguno --</option>
+              				<?php foreach($arbitros as $arbitro){ ?>
+              					<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro1)?>><?=$arbitro->nombre?></option>
+              				<?php } ?>
+              			</select>
+              			<div class="help-block with-errors"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label for="formArbitro2" class="col-sm-3 control-label text-left">Árbitro auxiliar 1</label>
+                  <div class="col-sm-9">
+                    <select type="text" class="form-control" id="formArbitro2" name="formArbitro2">
+              				<option value="">-- Ninguno --</option>
+              				<?php foreach($arbitros as $arbitro){ ?>
+              					<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro2)?>><?=$arbitro->nombre?></option>
+              				<?php } ?>
+              			</select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label for="formArbitro3" class="col-sm-3 control-label text-left">Árbitro auxiliar 2</label>
+                  <div class="col-sm-9">
+                    <select type="text" class="form-control" id="formArbitro3" name="formArbitro3">
+                      <option value="">-- Ninguno --</option>
+                      <?php foreach($arbitros as $arbitro){ ?>
+                        <option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro3)?>><?=$arbitro->nombre?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
 					<input type="hidden" id="formPartidoId" name="id" />
-					
+
 					<div class="alert alert-danger form-error marginTop20"></div>
 					<div class="alert alert-info form-wait marginTop20"><i class="fa fa-fw fa-spinner fa-spin"></i> Registrando información...</div>
 					<div class="alert alert-success form-success marginTop20"><i class="fa fa-fw fa-check"></i> El registro se realizó exitosamente.</div>

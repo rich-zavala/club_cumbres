@@ -9,7 +9,7 @@
 				{
 					//Contabilizar equipos
 					$equiposCantidad = @count($info->equipos[$cat->ID_CatTorn]);
-					
+
 					//Evento después de eliminar una categoría
 					$location = (substr_count(actualURL(), $cat->ID_CatTorn) > 0) ? base() . 'torneos/inicio/' . $torneo.suffix() : actualURL();
 				?>
@@ -23,7 +23,7 @@
 				<?php } ?>
 			</ul>
 		</div>
-		
+
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-gears"></i> Acciones</div>
 			<ul class="list-group menuSecundario">
@@ -32,7 +32,7 @@
 				<li class="list-group-item"><a href="<?=base()?>torneo/sanciones/listado/<?=$info->ID_Torneo.suffix()?>"><i class="fa fa-fw fa-bullhorn"></i> Actualizar sancionados</a></li>
 			</ul>
 		</div>
-		
+
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-repeat"></i> Estatus</div>
 			<ul class="list-group menuSecundario">
@@ -62,11 +62,11 @@
 		<?php
 		//Notificación de edición / creación
 		if($this->session->flashdata('creado')) echo "<div class='alert alert-success autoHide'>El registro ha sido creado exitosamente. <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
-		if($this->session->flashdata('actualizado')) echo "<div class='alert alert-success autoHide'>El registro ha sido creado actualizado. <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
-		
+		if($this->session->flashdata('actualizado')) echo "<div class='alert alert-success autoHide'>El registro ha sido actualizado. <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
+
 		//Mostrar vista cargada
 		echo $vista;
-		
+
 		//Mostrar formulario de edición / creación
 		echo $formularioTorneo;
 		?>
@@ -81,7 +81,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title">Generar lista de partidos por cancha</h4>
 				</div>
-				<div class="modal-body">					
+				<div class="modal-body">
 					<div class="row">
 						<div class="col-xs-4">
 							<div class="form-group marginBottom0">

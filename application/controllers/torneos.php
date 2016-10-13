@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Torneos extends CI_Controller {
-	
+
 	function __construct() {
 		parent::__construct();
 		$this->load->model('motorneos');
@@ -9,7 +9,7 @@ class Torneos extends CI_Controller {
 
 	//Registro de visitantes
 	public function index(){ show_404(); } //No usamos el index
-	
+
 	//Listado inicial
 	public function listado()
 	{
@@ -20,11 +20,11 @@ class Torneos extends CI_Controller {
 			$torneos->generar();
 			$d['registros_cantidad'] = $torneos->registros;
 			if($torneos->registros_cantidad > 0) $d['registros'] = $torneos->registros;
-			
+
 			//Eventos de creación / actualización
 			$d['creado'] = $this->session->flashdata('creado');
 			$d['formularioTorneo'] = $this->load->view('torneos/torneos_formulario', null, true);
-			
+
 			//Inicia carga de vistas
 			$this->moheader->addJs('librerias/torneos/comunes.js');
 			$this->moheader->addJs('librerias/torneos/torneos_listado.js');
@@ -40,7 +40,7 @@ class Torneos extends CI_Controller {
 			$this->load->view('layouts/footer'); //Agrega footer
 		}
 	}
-	
+
 	//Vista inicial de un torneo
 	public function inicio($torneo = 0)
 	{
@@ -51,12 +51,12 @@ class Torneos extends CI_Controller {
 			$t->id($torneo);
 			$i['info'] = $t->info();
 			$i['config'] = $t->config();
-			
+
 			//Cargar vistas de torneo
 			$i['vista'] = $this->load->view('torneos/inicio', null, true);
 			$i['formularioTorneo'] = $this->load->view('torneos/torneos_formulario', $i['info'], true);
 			$i['torneo'] = $torneo;
-			
+
 			//Inicia carga de vistas
 			$this->moheader->addJs('librerias/torneos/comunes.js');
 			$this->moheader->addJs('librerias/torneos/torneos_listado.js');
@@ -73,7 +73,7 @@ class Torneos extends CI_Controller {
 		}
 		else show_404();
 	}
-	
+
 	//Inserción y actualización de registros
 	public function submit()
 	{
@@ -83,18 +83,26 @@ class Torneos extends CI_Controller {
 			$nombre = $this->input->post('nombre', true);
 			$agno = $this->input->post('agno', true);
 			$tipo = $this->input->post('tipo', true);
-			
+
 			$t = $this->motorneos->init();
 			$t->id($id);
 			$t->nombre($nombre);
 			$t->agno($agno);
 			$t->tipo($tipo);
-			
+
+			//Sueldos de árbitros
+			$t->sueldos = array(
+				'torneo' => $id,
+				'sueldo1' => (float) $this->input->post('sueldo1', true),
+				'sueldo2' => (float) $this->input->post('sueldo2', true),
+				'sueldo3' => (float) $this->input->post('sueldo3', true)
+			);
+
 			if($id == 0)
 				$r = $t->crear();
 			else
 				$r = $t->actualizar();
-			
+
 			if($r)
 			{
 				$this->load->helper('url');

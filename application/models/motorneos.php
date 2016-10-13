@@ -5,30 +5,31 @@ class Motorneos extends CI_Model
 	var $registros_cantidad = 0;
 	var $tabla = '';
 	var $id = 0;
-	
+
 	//Variables para crear un torneo
 	var $tipo;
 	var $nombre;
 	var $agno;
-	
+	var $sueldos = array();
+
 	//Variables para grupos
 	var $grupo_categoria = 0;
 	var $grupo_id = 0;
 	var $grupo_nombre;
 	var $grupo_publico;
 	var $grupo_equipos = array();
-	
+
 	//Variables para jornadas
 	var $jornada_id = 0;
 	var $jornada_nombre;
-	
+
 	public function init(){ return $this; }
 	public function tabla($i){ $this->tabla = $i; }
 	public function id($i){ $this->id = (int)$i; }
 	public function tipo($i){ $this->tipo = (int)$i; }
 	public function nombre($i){ $this->nombre = $i; }
 	public function agno($i){ $this->agno = (int)$i; }
-	
+
 	//Catálogo de todos los torneos
 	public function generar()
 	{
@@ -36,34 +37,34 @@ class Motorneos extends CI_Model
 		$this->registros_cantidad = $q->num_rows();
 		if($this->registros_cantidad > 0) $this->registros = $q->result();
 	}
-	
+
 	//Toda la información de un torneo
 	public function info()
 	{
 		$r = array();
 		if($this->id > 0) $r = $this->db->select('*, TipoTorneo(TipoTorn) tipo')->where('ID_Torneo', $this->id)->get('torneos')->row();
-		
+
 		//Obtener categorías
 		$q = $this->db->select('cc.NomCat, tc.ID_CatTorn')
 		->join('cat_catalog cc', 'cc.ID_Cat = tc.ID_Cat', 'inner')
 		->where('tc.ID_Torneo', $this->id)
 		->order_by('NomCat')
 		->get('torneos_cats tc');
-		
+
 		//Obtener categorías
 		$r->categorias = array();
 		foreach($q->result() as $cat) $r->categorias[$cat->ID_CatTorn] = $cat;
-		
+
 		//Obtener equipos
 		$r->equipos = array();
-		
+
 		$catsIds = array();
 		foreach($r->categorias as $cat)
 		{
 			$catsIds[] = $cat->ID_CatTorn;
 			$r->equipos[$cat->ID_CatTorn] = array();
 		}
-		
+
 		if(count($catsIds) > 0)
 		{
 			$q = $this->db->select('equipos_catalog.ID_Equipo, cat_catalog.NomCat, equipos_catalog.NomEquipo, equipos_catalog.ID_CatTorn')
@@ -78,12 +79,15 @@ class Motorneos extends CI_Model
 		{
 			show_error("No hay categorías disponibles en este torneo. Elimínelo y vuélvalo a crear.<script>setTimeout(function(){ window.location = '".base()."' }, 8000)</script>");
 		}
-		
+
 		foreach($q->result() as $e) $r->equipos[$e->ID_CatTorn][] = $e;
-		
+
+		//Agregar información de los árbitros
+		$r->arbitros = $this->db->where('torneo', $this->id)->get('arbitrosSueldos')->row();
+
 		return $r;
 	}
-	
+
 	//Obtener configuración
 	public function config()
 	{
@@ -91,7 +95,7 @@ class Motorneos extends CI_Model
 		foreach($this->db->get('config')->result() as $r) $config[$r->nom_config] = $r->val_config;
 		return $config;
 	}
-	
+
 	//Crear un torneo
 	public function crear()
 	{
@@ -104,7 +108,7 @@ class Motorneos extends CI_Model
 		$this->session->set_flashdata('creado', true);
 		return $r;
 	}
-	
+
 	//Actualizar un torneo
 	public function actualizar()
 	{
@@ -115,6 +119,13 @@ class Motorneos extends CI_Model
 		);
 		$r = $this->db->where('ID_Torneo', $this->id)->update('torneos', $i);
 		$this->session->set_flashdata('actualizado', true);
+
+		//Registrar sueldos
+		if($this->db->where('torneo', $this->id)->get('arbitrosSueldos')->num_rows() > 0)
+			$this->db->where('torneo', $this->id)->update('arbitrosSueldos', $this->sueldos);
+		else
+			$this->db->insert('arbitrosSueldos', $this->sueldos);
+
 		return $r;
 	}
 
@@ -126,7 +137,7 @@ class Motorneos extends CI_Model
 	public function grupo_publico($i){ $this->grupo_publico = (int)$i; }
 	public function grupo_equipos($i){ $this->grupo_equipos = $i; }
 	public function grupo_categoria($i){ $this->grupo_categoria = (int)$i; }
-	
+
 	//Grupos de un torneo
 	public function grupos($incluirJornadas = false, $incluirPartidos = false)
 	{
@@ -147,7 +158,7 @@ class Motorneos extends CI_Model
 					$r[$k]->jornadas = $this->db->select('j.ID_Jornada, j.DenomJor')->join('vg_jorn v', 'v.ID_Jornada = j.ID_Jornada')
 														->where('ID_VueltaGpo', $v->ID_VueltaGpo)->order_by('CAST(DenomJor AS UNSIGNED)', 'DESC')->get('jornadas j')->result();
 				}
-				
+
 				//Alimentar información de partidos
 				if($incluirPartidos)
 				{
@@ -155,7 +166,7 @@ class Motorneos extends CI_Model
 					{
 						$jornadas = array();
 						foreach($r[$k]->jornadas as $jor) $jornadas[] = $jor->ID_Jornada;
-					
+
 						$q = $this->db->select('p.ID_Jornada,
 																		p.ID_Partido,
 																		p.FechaHora,
@@ -173,7 +184,7 @@ class Motorneos extends CI_Model
 						->get('jornadas');
 					}
 					// echo $this->db->last_query();
-					
+
 					foreach($r[$k]->jornadas as $kj => $jor)
 					{
 						$r[$k]->jornadas[$kj]->partidos = array();
@@ -188,7 +199,7 @@ class Motorneos extends CI_Model
 								{
 									$equipo_puntaje = explode('|', $equipo);
 									$nombre = null;
-									
+
 									//Identificar nombres de equipos
 									foreach($r[$k]->equipos as $equipo_grupo)
 									{
@@ -198,20 +209,20 @@ class Motorneos extends CI_Model
 											break;
 										}
 									}
-									
+
 									$partido->equipos[] = array(
 										'id' => $equipo_puntaje[0],
 										'nombre' => $nombre,
 										'puntaje' => $equipo_puntaje[1]
 									);
-									
+
 									$equipos_ocupados[] = $equipo_puntaje[0];
 								}
-								
+
 								$r[$k]->jornadas[$kj]->partidos[] = $partido;
 							}
 						}
-					
+
 						//Incluir equipos que descansan
 						$r[$k]->jornadas[$kj]->descansos = $descansos = array();
 						foreach($r[$k]->equipos as $equipo_grupo)
@@ -226,27 +237,27 @@ class Motorneos extends CI_Model
 				}
 			}
 		}
-		
+
 		return $r;
 	}
-	
+
 	//Crear grupo de torneo
 	public function grupo_crear()
 	{
 		$r = array( 'error' => 0 );
-		
+
 		$i = array(
 			'ID_CatTorn' => $this->grupo_categoria,
 			'DenomVG' => $this->grupo_nombre,
 			'Es_Public' => $this->grupo_publico
 		);
-		
+
 		//Insertar grupo
 		if($this->db->insert('vueltas_gpos', $i))
 		{
 			$grupo_id = $this->db->insert_id();
 			$r['redirect'] = "{$this->id}/{$this->grupo_categoria}/{$grupo_id}";
-			
+
 			//Insertar equipos que pertenecerán a este grupo
 			if(is_array($this->grupo_equipos) and array_sum($this->grupo_equipos) > 0)
 			{
@@ -258,7 +269,7 @@ class Motorneos extends CI_Model
 						'ID_Equipo' => $e
 					);
 				}
-					
+
 				if(!$this->db->insert_batch('vg_equipos', $i))
 				{
 					$r['error'] = 2;
@@ -267,24 +278,24 @@ class Motorneos extends CI_Model
 			}
 		}
 		else $r['error']++;
-		
+
 		$this->session->set_flashdata('grupo_creado', $grupo_id);
 		return $r;
 	}
-	
+
 	//Actualizar grupo de torneo
 	public function grupo_actualizar()
 	{
 		$r = array( 'error' => 0 );
-		
+
 		$i = array(
 			'DenomVG' => $this->grupo_nombre,
 			'Es_Public' => $this->grupo_publico
 		);
-		
+
 		//Insertar grupo
 		$actualizado = $this->db->where('ID_VueltaGpo', $this->grupo_id)->update('vueltas_gpos', $i);
-		
+
 		//Insertar equipos que pertenecerán a este grupo
 		if($actualizado)
 		{
@@ -293,7 +304,7 @@ class Motorneos extends CI_Model
 			{
 				//Eliminar equipos que fueron removidos
 				$this->db->where($w)->where('ID_Equipo NOT IN (' . implode(",", $this->grupo_equipos) .')')->delete('vg_equipos');
-				
+
 				//Detectar cambios en equipos
 				foreach($this->grupo_equipos as $e)
 				{
@@ -314,7 +325,7 @@ class Motorneos extends CI_Model
 			}
 		}
 		else $r['error']++;
-		
+
 		$this->session->set_flashdata('editado', $this->grupo_id);
 		return $r;
 	}
@@ -324,7 +335,7 @@ class Motorneos extends CI_Model
 	*/
 	public function jornada_id($i){ $this->jornada_id = (int)$i; }
 	public function jornada_nombre($i){ $this->jornada_nombre = trim($i); }
-	
+
 	//Información de una jornada
 	public function jornada_info()
 	{
@@ -338,52 +349,52 @@ class Motorneos extends CI_Model
 		->get('vg_jorn');
 		return $q->row();
 	}
-	
+
 	//Crear jornada de grupo
 	public function jornada_crear()
 	{
 		$r = array( 'error' => 0 );
-		
+
 		$i = array(
 			'DenomJor' => $this->jornada_nombre
 		);
-		
+
 		//Insertar jornada
 		if($this->db->insert('jornadas', $i))
 		{
 			$jornada_id = $this->db->insert_id();
-			
+
 			//Indezar jornada con grupo
 			$i = array(
 				'ID_VueltaGpo' => $this->grupo_id,
 				'ID_Jornada' => $jornada_id
 			);
-			
+
 			if(!$this->db->insert('vg_jorn', $i)) $r['error'] = 2;
 		}
 		else $r['error']++;
-		
+
 		$this->session->set_flashdata('jornada_creada', $jornada_id);
 		return $r;
 	}
-	
+
 	//Actualizar jornada de grupo
 	public function jornada_actualizar()
 	{
 		$r = array( 'error' => 0 );
-		
+
 		//Verificar que no exista esta jornada duplicada
 		$w = array(
 			'ID_VueltaGpo' => $this->grupo_id,
 			'DenomJor' => $this->jornada_nombre
 		);
-		
+
 		if($this->db->select('v.ID_Jornada')->join('vg_jorn v', 'v.ID_Jornada = j.ID_Jornada')->where('v.ID_Jornada != ', $this->jornada_id)->where($w)->get('jornadas j')->num_rows() == 0)
 		{
 			$i = array(
 				'DenomJor' => $this->jornada_nombre
 			);
-		
+
 			if(!$this->db->where('ID_Jornada', $this->jornada_id)->update('jornadas', $i)) $r['error']++;
 		}
 		else $r['error'] = 2;
@@ -400,13 +411,13 @@ class Motorneos extends CI_Model
 			$w = ' AND ej.ID_Jugador = ' . $jugador;
 			$g = ' GROUP BY s.id';
 		}
-		
+
 		if($listado) //Sanciones de un torneo
 		{
 			$w = ' AND En_Listado = 1';
 			$g .= ' ORDER BY name';
 		}
-		
+
 		$s = "SELECT DISTINCT s.id, ej.ID_Jugador, ej.ID_Equipo, CONCAT(ej.NomJug, ' ', ej.ApeJug) name, ec.NomEquipo, s.PartSan, s.JorSan, s.En_Listado, IFNULL(NumGoles, 0) NumGoles,
 					DATE_FORMAT(fechaRegistro, '%W %d/%b/%Y a las %H:%m') fecha,
 					COUNT(s.id) sanciones
