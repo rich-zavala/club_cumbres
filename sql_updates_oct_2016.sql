@@ -18,7 +18,7 @@ CREATE TABLE `1557164_cumbres`.`arbitrosSueldos` (
 CREATE TABLE `1557164_cumbres`.`arbitrosPartidos` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `partido` INT NOT NULL,
-  `arbitro1` INT NOT NULL,
+  `arbitro1` INT NULL,
   `arbitro2` INT NULL,
   `arbitro3` INT NULL,
   PRIMARY KEY (`id`));

@@ -285,13 +285,12 @@
                 <div class="form-group">
                   <label for="formArbitro1" class="col-sm-3 control-label text-left">Árbitro central</label>
                   <div class="col-sm-9">
-                    <select type="text" class="form-control" id="formArbitro1" name="formArbitro1" data-error="Especifique el árbitro central" required>
+                    <select type="text" class="form-control" id="formArbitro1" name="formArbitro1">
               				<option value="">-- Ninguno --</option>
               				<?php foreach($arbitros as $arbitro){ ?>
               					<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro1)?>><?=$arbitro->nombre?></option>
               				<?php } ?>
               			</select>
-              			<div class="help-block with-errors"></div>
                   </div>
                 </div>
               </div>

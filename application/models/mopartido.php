@@ -9,19 +9,19 @@ class Mopartido extends CI_Model
 		1 => 44, //Cancha chica
 		2 => 44 //Cancha grande
 	);
-	
+
 	//Límites de partidos por cancha en el mismo dia y hora
 	var $limite = array(
 		1 => 3, //Cancha Chica
 		2 => 1 //Cancha Grande
 	);
-	
+
 	//Descripción de canchas
 	var $canchas = array(
 		1 => 'CH',
 		2 => 'PRO'
 	);
-	
+
 	var $id = 0;
 	var $equipo1 = 0;
 	var $equipo2 = 0;
@@ -30,10 +30,13 @@ class Mopartido extends CI_Model
 	var $pendiente = false;
 	var $fecha = '';
 	var $hora = '';
-	
+
+	//Información de los árbitros de un partido
+	var $arbitros = array();
+
 	//Crear dateTime
 	private function fechaHora(){ if($this->fecha != '' and $this->hora != '')  $this->fecha = $this->fecha . ' ' . $this->hora; }
-	
+
 	public function init(){ return $this; }
 	public function id($i){ $this->id = (int)$i; }
 	public function equipo1($i){ (int)$this->equipo1 = $i; }
@@ -56,7 +59,18 @@ class Mopartido extends CI_Model
 			$this->hora = '00:00:00';
 		}
 	}
-	
+
+	public function setArbitros($arbitros)
+	{
+		for($i = 0; $i < 3; $i++)
+		{
+			if(isset($arbitros[$i]) and (int)$arbitros[$i] > 0)
+				$this->arbitros[$i] = (int)$arbitros[$i];
+			else
+				$this->arbitros[$i] = null;
+		}
+	}
+
 	/*
 	Validadores
 	*/
@@ -70,19 +84,19 @@ class Mopartido extends CI_Model
 			return $q->num_rows() < $this->limite[$this->cancha];
 		} else return true;
 	}
-	
+
 	public function validar_equipos_partidos($edicion = false)
-	{		
+	{
 		$w = array( 'ID_Jornada' => $this->jornada );
 		$q = $this->db->where($w, false)->where("(ID_Equipo = {$this->equipo1} OR ID_Equipo = {$this->equipo2})")
 		->join('part_punt pp', 'pp.ID_Partido = p.ID_Partido', 'inner');
-		
+
 		//Para edición no comparar equipos del partido en edición
 		$q->where('pp.ID_Partido != ' . $this->id);
-		
+
 		return $q->get('partidos p')->num_rows() == 0;
 	}
-	
+
 	//Validar la disposición para un partido
 	public function validar($edicion = false)
 	{
@@ -90,19 +104,19 @@ class Mopartido extends CI_Model
 			'error' => 0,
 			'id' => 0
 		);
-		
+
 		//Verificar colisión
 		if($this->equipo1 == $this->equipo2) $r['error'] = 1;
-		
+
 		//Si no es pendiente
 		if($r['error'] == 0 and !$this->validar_cancha()) $r['error'] = 2;
 
 		//Verificar si los equipos tienen partidos
 		if($r['error'] == 0 and !$this->validar_equipos_partidos($edicion)) $r['error'] = 3;
-		
+
 		return $r;
 	}
-	
+
 	//Formar arreglo para active record
 	public function active_array()
 	{
@@ -113,7 +127,7 @@ class Mopartido extends CI_Model
 						'TipoCancha' => $this->cancha
 					);
 	}
-	
+
 	//Agregar equipos a un partido
 	private function agregar_equipos($partido)
 	{
@@ -130,7 +144,7 @@ class Mopartido extends CI_Model
 		);
 		return $this->db->insert_batch('part_punt', $i);
 	}
-	
+
 	//Registro de nuevo partido
 	/*
 	Códigos de error:
@@ -142,7 +156,7 @@ class Mopartido extends CI_Model
 	public function crear()
 	{
 		$r = $this->validar();
-		
+
 		//Registrar partido
 		if($r['error'] == 0)
 		{
@@ -150,32 +164,37 @@ class Mopartido extends CI_Model
 			if(!$this->db->insert('partidos', $i))
 				$r['error'] = 4;
 			else
-				$r['id'] = $this->db->insert_id();
+				$r['id'] = $this->id = $this->db->insert_id();
 		}
-		
+
 		//Registrar equipos
 		if($r['error'] == 0 and !$this->agregar_equipos($r['id'])) $r['error'] = 5;
-		
+
+		//Registrar arbitros
+		if($r['error'] == 0)
+			if(!$this->insertarArbitros())
+				$r['error'] = 5.5;
+
 		//Notificar jugadores
 		if($r['error'] == 0 and !$this->notificar()) $r['error'] = 6;
-		
+
 		//Rollback!!!
 		if($r['error'] > 0)
 		{
 			$this->id($r['id']);
 			$this->eliminar();
 		}
-		
+
 		return $r;
 	}
-	
+
 	public function actualizar()
 	{
 		$r = $this->validar(true);
-		
+
 		//Verificar que el partido no tenga puntaje asignado
 		if($r['error'] == 0 and (int)$this->db->where('ID_Partido', $this->id)->get('partidos')->row()->Punt_Fue_Asig > 0) $r['error'] = 9;
-		
+
 		//Registrar partido
 		if($r['error'] == 0)
 		{
@@ -185,14 +204,19 @@ class Mopartido extends CI_Model
 			else
 				$r['id'] = $this->id;
 		}
-		
+
 		//Registrar equipos
 		if($r['error'] == 0 and !$this->db->where('ID_Partido', $this->id)->delete('part_punt')) $r['error'] = 5;
 		if($r['error'] == 0 and !$this->agregar_equipos($this->id)) $r['error'] = 5;
-		
+
+		//Registrar arbitros
+		if($r['error'] == 0)
+			if(!$this->insertarArbitros())
+				$r['error'] = 5.5;
+
 		//Notificar jugadores
-		if($r['error'] == 0 and !$this->notificar()) $r['error'] = 6;
-		
+		// if($r['error'] == 0 and !$this->notificar()) $r['error'] = 6;
+
 		return $r;
 	}
 
@@ -207,11 +231,11 @@ class Mopartido extends CI_Model
 		$e->id($this->equipo2);
 		$e2_info = $e->info();
 		$jugadores =  (object) array_merge((array) $e1_info->jugadores, (array) $e2_info->jugadores);
-		
+
 		//Crear arreglo de emails de jugadores
 		$emails = array();
 		foreach($jugadores as $j) if(strlen(trim($j->EmailJug)) > 0) $emails[] = trim($j->EmailJug);
-		
+
 		if(count($emails) > 0)
 		{
 			//Info del torneo
@@ -219,10 +243,10 @@ class Mopartido extends CI_Model
 			$t = $this->motorneos->init();
 			$t->jornada_id($this->jornada);
 			$info = $t->jornada_info();
-			
+
 			//Formateo de fecha y hora
 			$fecha = @FormatoFechaHora($this->fecha);
-			
+
 			//Crear mensaje
 			$msg = "<table width=550 border=0 cellpadding=0 cellspacing=0>
 								<tr><td><img src=http://www.clubcumbres.com/2010/admin/imagenes/logocumbresced.gif width=225 height=62/></td></tr>
@@ -238,15 +262,15 @@ class Mopartido extends CI_Model
 								Este partido es correspondiente a la jornada <b>{$info->DenomJor}</b> y esta programado para el dia <b>{$fecha}</b>, en la cancha <b>{$this->canchas[$this->cancha]}</b>.<br>
 								<br>Agradeceremos tu puntualidad.</td></tr>
 								<tr><td align=right><img src=http://www.clubcumbres.com/2010/admin/imagenes/futbolrapido.gif width=111 height=60/></td></tr>
-							</table>";		
-			
+							</table>";
+
 			//Crear objeto de email
 			$this->load->library('email');
 			$this->email->initialize();
 			$this->email->from(EMAIL_ADMIN, 'Club Cumbres');
 			$this->email->to($emails);
 			$this->email->subject('Nuevo partido programado');
-			
+
 			//Enviar
 			$this->email->message($msg);
 			$enviado = $this->email->send();
@@ -262,6 +286,27 @@ class Mopartido extends CI_Model
 		return $this->db->where('ID_Partido', $this->id)->delete('partidos');
 	}
 
+	//Insertar árbitros
+	private function insertarArbitros()
+	{
+		//Eliminar árbitros previamente registrados
+		$this->db->where('partido', $this->id)->delete('arbitrosPartidos');
+
+		//Registrar arbitros
+		if($this->arbitros[0] > 0 or $this->arbitros[1] > 0 or $this->arbitros[2] > 0)
+		{
+			$i = array(
+				'partido' => $this->id,
+				'arbitro1'=> $this->arbitros[0],
+				'arbitro2'=> $this->arbitros[1],
+				'arbitro3'=> $this->arbitros[2]
+			);
+
+			return $this->db->insert('arbitrosPartidos', $i);
+		}
+		else return true;
+	}
+
 	//Establecer puntaje de un partido
 	public function shootouts($i){ $this->shootouts = (int)$i; }
 	public function shootEquipo($i){ $this->shootEquipo = (int)$i; }
@@ -271,10 +316,10 @@ class Mopartido extends CI_Model
 		$r = array( 'error' => 0 );
 		//Resetear los puntajes de este partido
 		$this->db->where('ID_Partido', $this->id)->delete('goles_jornadas');
-		
+
 		foreach($this->goles_jugadores as $equipo => $jugadores) //Registrar goles
 		{
-			
+
 			foreach($jugadores as $jugador => $goles)
 			{
 				$id = 0;
@@ -285,11 +330,11 @@ class Mopartido extends CI_Model
 					'ID_Equipo' => (int)$equipo,
 					'NumGoles' => (int)$goles
 				);
-				
+
 				if((int)$goles > 0) if(!$this->db->insert('goles_jornadas', $w)) $r['error']++;
 			}
 		}
-		
+
 		$this->db->where('ID_Partido', $this->id)->delete('part_gan_sout');
 		if($r['error'] == 0 and $this->shootouts == 1) //Registrar victoria por shoot outs
 		{
@@ -299,19 +344,19 @@ class Mopartido extends CI_Model
 			);
 			if(!$this->db->insert('part_gan_sout', $i)) $r['error']++;
 		}
-		
+
 		if($r['error'] == 0) //Índice de puntaje asignado
 		{
 			$i = array( 'Punt_Fue_Asig' => 1 );
 			if(!$this->db->where('ID_Partido', $this->id)->update('partidos', $i)) $r['error']++;
 		}
-		
+
 		if($r['error'] == 0) //Actualizar puntajes
 		{
 			$s = "CALL setPuntaje({$this->id})";
 			if(!$this->db->simple_query($s)) $r['error']++;
 		}
-		
+
 		return $r;
 	}
 }

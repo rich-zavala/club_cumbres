@@ -4,9 +4,9 @@ class Moguardia extends CI_Model
 	function __construct() {
 		parent::__construct();
 	}
-	
+
 	function init(){ return $this;	}
-	
+
 	//Verificar que exista una sesión en el sistema
 	public function isloged($redirect = false)
 	{
@@ -20,7 +20,7 @@ class Moguardia extends CI_Model
 			else return false;
 		else return true;
 	}
-	
+
 	//Registrar sesión de usuario
 	public function setLogin($u, $p)
 	{
@@ -40,10 +40,10 @@ class Moguardia extends CI_Model
 		}
 		else @$this->session->sess_destroy();
 	}
-	
+
 	//Cerrar sesión
 	public function logout()
-	{	
+	{
 		$data = array( 'acceso' => false );
 		$this->session->set_userdata($data);
 		@$this->session->sess_destroy();

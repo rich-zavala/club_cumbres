@@ -223,6 +223,16 @@ class Partidos extends CI_Controller {
 			Verificar que ambos equipos existan
 			*/
 
+			/*
+			Ricardo 13 oct 2016
+			Agregar información de los árbitros
+			*/
+			$p->setArbitros(array(
+				$this->input->post('formArbitro1', true),
+				$this->input->post('formArbitro2', true),
+				$this->input->post('formArbitro3', true)
+			));
+
 			if($p->id == 0)
 				$r = $p->crear();
 			else

@@ -174,16 +174,17 @@ class Motorneos extends CI_Model
 																		DATE_FORMAT(FechaHora, "%H:%i") hora,
 																		p.Es_Pendiente, Punt_Fue_Asig, p.TipoCancha,
 																		GROUP_CONCAT(CONCAT(pp.ID_Equipo, "|", pp.Puntaje) ORDER BY pp.ID_Equipo) equipos,
-																		IFNULL(ps.ID_Equipo, 0) ganoSO', false)
+																		IFNULL(ps.ID_Equipo, 0) ganoSO,
+																		CONCAT(IFNULL(ap.arbitro1, ""), "|", IFNULL(ap.arbitro2, ""), "|", IFNULL(ap.arbitro3, "")) arbitros', false)
 						->where('jornadas.ID_Jornada IN (' . implode($jornadas, ',') . ')')
 						->join('partidos p', 'jornadas.ID_Jornada = p.ID_Jornada')
 						->join('part_punt pp', 'p.ID_Partido = pp.ID_Partido', 'left')
 						->join('part_gan_sout ps', 'ps.ID_Partido = p.ID_Partido', 'left')
+						->join('arbitrosPartidos ap', 'ap.partido = p.ID_Partido', 'left')
 						->group_by('p.ID_Partido')
 						->order_by('FechaHora')
 						->get('jornadas');
 					}
-					// echo $this->db->last_query();
 
 					foreach($r[$k]->jornadas as $kj => $jor)
 					{
@@ -215,6 +216,9 @@ class Motorneos extends CI_Model
 										'nombre' => $nombre,
 										'puntaje' => $equipo_puntaje[1]
 									);
+
+									if(!is_array($partido->arbitros))
+										$partido->arbitros = explode('|', $partido->arbitros);
 
 									$equipos_ocupados[] = $equipo_puntaje[0];
 								}
