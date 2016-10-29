@@ -51,8 +51,8 @@ $active_record = TRUE;
 /*Grupos de conexión*/
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
-$db['default']['password'] = '';
-$db['default']['database'] = '1557164_cumbres';
+$db['default']['password'] = 'rich2011';
+$db['default']['database'] = 'clubcum_clubcumbres';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = FALSE;

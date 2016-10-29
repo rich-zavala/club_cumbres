@@ -105,6 +105,10 @@ class Motorneos extends CI_Model
 			'YrTorn' => $this->agno
 		);
 		$r = $this->db->insert('torneos', $i);
+		$this->id = $this->db->insert_id();
+		
+		$this->registrar_sueldos();
+		
 		$this->session->set_flashdata('creado', true);
 		return $r;
 	}
@@ -120,13 +124,19 @@ class Motorneos extends CI_Model
 		$r = $this->db->where('ID_Torneo', $this->id)->update('torneos', $i);
 		$this->session->set_flashdata('actualizado', true);
 
-		//Registrar sueldos
-		if($this->db->where('torneo', $this->id)->get('arbitrosSueldos')->num_rows() > 0)
-			$this->db->where('torneo', $this->id)->update('arbitrosSueldos', $this->sueldos);
-		else
-			$this->db->insert('arbitrosSueldos', $this->sueldos);
-
+		$this->registrar_sueldos();		
 		return $r;
+	}
+	
+	//Registrar sueldos
+	private function registrar_sueldos()
+	{
+		$this->sueldos['torneo'] = $this->id;
+		
+		if($this->db->where('torneo', $this->id)->get('arbitrosSueldos')->num_rows() > 0)
+			return $this->db->where('torneo', $this->id)->update('arbitrosSueldos', $this->sueldos);
+		else
+			return $this->db->insert('arbitrosSueldos', $this->sueldos);
 	}
 
 	/*
@@ -175,12 +185,17 @@ class Motorneos extends CI_Model
 																		p.Es_Pendiente, Punt_Fue_Asig, p.TipoCancha,
 																		GROUP_CONCAT(CONCAT(pp.ID_Equipo, "|", pp.Puntaje) ORDER BY pp.ID_Equipo) equipos,
 																		IFNULL(ps.ID_Equipo, 0) ganoSO,
-																		CONCAT(IFNULL(ap.arbitro1, ""), "|", IFNULL(ap.arbitro2, ""), "|", IFNULL(ap.arbitro3, "")) arbitros', false)
+																		CONCAT(IFNULL(ap.arbitro1, ""), "|", IFNULL(ap.arbitro2, ""), "|", IFNULL(ap.arbitro3, "")) arbitros,
+																		CONCAT(IFNULL(arbitro1faltas1,"0"),",",IFNULL(arbitro1faltas2,"0"),",",IFNULL(arbitro1faltas3,"0"),",",
+																		IFNULL(arbitro1faltas4,"0"),",",IFNULL(arbitro2faltas1,"0"),",",IFNULL(arbitro2faltas2,"0"),",",
+																		IFNULL(arbitro2faltas3,"0"),",",IFNULL(arbitro2faltas4,"0"),",",IFNULL(arbitro3faltas1,"0"),",",
+																		IFNULL(arbitro3faltas2,"0"),",",IFNULL(arbitro3faltas3,"0"),",",IFNULL(arbitro3faltas4,"0")) arbitrosFaltas', false)
 						->where('jornadas.ID_Jornada IN (' . implode($jornadas, ',') . ')')
 						->join('partidos p', 'jornadas.ID_Jornada = p.ID_Jornada')
 						->join('part_punt pp', 'p.ID_Partido = pp.ID_Partido', 'left')
 						->join('part_gan_sout ps', 'ps.ID_Partido = p.ID_Partido', 'left')
 						->join('arbitrosPartidos ap', 'ap.partido = p.ID_Partido', 'left')
+						->join('arbitrospartidosfaltas apf', 'apf.arbitrospartido = ap.id', 'left')
 						->group_by('p.ID_Partido')
 						->order_by('FechaHora')
 						->get('jornadas');

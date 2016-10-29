@@ -9,7 +9,7 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="formNombre">Nombre</label>
-						<input type="text" class="form-control" id="formNombre" name="nombre" data-minlength="4" data-error="Especifique el nombre del torneo" value="<?=@$NomTorneo?>" required>
+						<input type="text" class="form-control" id="formNombre" name="nombre" data-minlength="4" data-error="Especifique el nombre del torneo" value="<?=@htmlentities($NomTorneo)?>" required>
 						<div class="help-block with-errors"></div>
 					</div>
 					<div class="row">
@@ -37,25 +37,25 @@
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label for="sueldo1">Central</label>
+								<label for="sueldo1">Árbitro 1</label>
 								<input type="number" class="form-control" id="sueldo1" name="sueldo1" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo1?>" required>
 								<div class="help-block with-errors"></div>
 							</div>
 						</div>
-							<div class="col-sm-4">
-								<div class="form-group">
-									<label for="sueldo2">Auxiliar 1</label>
-									<input type="number" class="form-control" id="sueldo2" name="sueldo2" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo2?>" required>
-									<div class="help-block with-errors"></div>
-								</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="sueldo2">Árbitro 2</label>
+								<input type="number" class="form-control" id="sueldo2" name="sueldo2" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo2?>" required>
+								<div class="help-block with-errors"></div>
 							</div>
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label for="sueldo3">Auxiliar 2</label>
-										<input type="number" class="form-control" id="sueldo3" name="sueldo3" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo3?>" required>
-										<div class="help-block with-errors"></div>
-									</div>
-								</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="sueldo3">Crono</label>
+								<input type="number" class="form-control" id="sueldo3" name="sueldo3" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo3?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</div>
 					</div>
 					<input type="hidden" id="formId" name="id" value="<?=@(int)$ID_Torneo?>" />
 					<input type="hidden" name="referer" value="<?=current_url()?>" />

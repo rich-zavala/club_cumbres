@@ -232,6 +232,19 @@ class Partidos extends CI_Controller {
 				$this->input->post('formArbitro2', true),
 				$this->input->post('formArbitro3', true)
 			));
+			
+			/*
+			Ricardo 28 oct 2016
+			Agregar información de faltas de los árbitros
+			*/			
+			for($i = 1; $i < 4; $i++)
+			{
+				for($ii = 1; $ii < 5; $ii++)
+				{
+					$arbitroFaltaIndice = 'arbitro' . $i . 'faltas' . $ii; 
+					$p->addArbitrosFalta($arbitroFaltaIndice, $this->input->post($arbitroFaltaIndice));
+				}
+			}
 
 			if($p->id == 0)
 				$r = $p->crear();

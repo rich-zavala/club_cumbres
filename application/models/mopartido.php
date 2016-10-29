@@ -33,6 +33,7 @@ class Mopartido extends CI_Model
 
 	//Información de los árbitros de un partido
 	var $arbitros = array();
+	var $arbitrosFaltas = array();
 
 	//Crear dateTime
 	private function fechaHora(){ if($this->fecha != '' and $this->hora != '')  $this->fecha = $this->fecha . ' ' . $this->hora; }
@@ -69,6 +70,11 @@ class Mopartido extends CI_Model
 			else
 				$this->arbitros[$i] = null;
 		}
+	}
+	
+	public function addArbitrosFalta($indice, $valor)
+	{
+		$this->arbitrosFaltas[$indice] = $valor;
 	}
 
 	/*
@@ -190,32 +196,38 @@ class Mopartido extends CI_Model
 
 	public function actualizar()
 	{
-		$r = $this->validar(true);
-
-		//Verificar que el partido no tenga puntaje asignado
-		if($r['error'] == 0 and (int)$this->db->where('ID_Partido', $this->id)->get('partidos')->row()->Punt_Fue_Asig > 0) $r['error'] = 9;
-
-		//Registrar partido
-		if($r['error'] == 0)
+		/*24 Oct 2016 - Si no tiene jornada entonces es edición de árbitros*/
+		if($this->jornada > 0)
 		{
-			$i = $this->active_array();
-			if(!$this->db->where('ID_Partido', $this->id)->update('partidos', $i))
-				$r['error'] = 4;
-			else
-				$r['id'] = $this->id;
-		}
+			$r = $this->validar(true);
 
-		//Registrar equipos
-		if($r['error'] == 0 and !$this->db->where('ID_Partido', $this->id)->delete('part_punt')) $r['error'] = 5;
-		if($r['error'] == 0 and !$this->agregar_equipos($this->id)) $r['error'] = 5;
+			//Verificar que el partido no tenga puntaje asignado
+			if($r['error'] == 0 and (int)$this->db->where('ID_Partido', $this->id)->get('partidos')->row()->Punt_Fue_Asig > 0) $r['error'] = 9;
+
+			//Registrar partido
+			if($r['error'] == 0)
+			{
+				$i = $this->active_array();
+				if(!$this->db->where('ID_Partido', $this->id)->update('partidos', $i))
+					$r['error'] = 4;
+				else
+					$r['id'] = $this->id;
+			}
+
+			//Registrar equipos
+			if($r['error'] == 0 and !$this->db->where('ID_Partido', $this->id)->delete('part_punt')) $r['error'] = 5;
+			if($r['error'] == 0 and !$this->agregar_equipos($this->id)) $r['error'] = 5;
+
+			//Notificar jugadores
+			if($r['error'] == 0 and !$this->notificar()) $r['error'] = 6;
+		}
+		else
+			$r['error'] = 0;
 
 		//Registrar arbitros
 		if($r['error'] == 0)
 			if(!$this->insertarArbitros())
 				$r['error'] = 5.5;
-
-		//Notificar jugadores
-		// if($r['error'] == 0 and !$this->notificar()) $r['error'] = 6;
 
 		return $r;
 	}
@@ -302,7 +314,14 @@ class Mopartido extends CI_Model
 				'arbitro3'=> $this->arbitros[2]
 			);
 
-			return $this->db->insert('arbitrosPartidos', $i);
+			if($this->db->insert('arbitrosPartidos', $i))
+			{
+				//Insertar faltas
+				return $this->db->where('arbitrospartido', $this->db->insert_id())->update('arbitrospartidosfaltas', $this->arbitrosFaltas);
+			}
+			else return false;
+			
+			
 		}
 		else return true;
 	}

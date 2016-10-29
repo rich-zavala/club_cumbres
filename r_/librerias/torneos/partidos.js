@@ -25,7 +25,7 @@ $().ready(function(){
 		partidoEliminar();
 		partidoFormulario();
 		$('[data-toggle="tooltip"]').tooltip();
-		$('.partido-no-editable').unbind('click').click(function(){ alert($(this).attr('title')); });
+		// $('.partido-no-editable').unbind('click').click(function(){ alert($(this).attr('title')); }); //24 Oct - Ahora siempre se pueden editar los partidos (Árbitros)
 	}
 	accionesInicializar();
 
@@ -156,11 +156,13 @@ $().ready(function(){
 				var d = t.data();
 
 				//Establecemos los valores al formulario
+				formularioPartido.find('input, select').attr('disabled', false);
 				formularioPartido[0].reset();
 				$('#formPartidoJornada').val(d.jornada);
 				$('#formPartidoId').val(0);
 				$('#formFecha').val((new Date().toJSON().slice(0,10)));
 				setTime($('#formHora').val(''));
+				$('#noEditable').hide();
 				formularioPartidoModal.modal('show').find('.modal-title').text('Creación de nuevo partido');
 
 				//Mostramos/Ocultamos mensajes de error o éxito si es que este formulario ya fue usado anteriormente
@@ -181,17 +183,33 @@ $().ready(function(){
 
 				//Establecemos los valores al formulario
 				formularioPartido[0].reset();
-				$('#formPartidoJornada').val(d.ID_Jornada);
 				$('#formPartidoId').val(d.ID_Partido);
-				$('#equipo1').val(d.equipos[0].id);
-				$('#equipo2').val(d.equipos[1].id);
-				$('#tipoCancha').val(d.TipoCancha);
-				$('#es_pendiente').val(d.Es_Pendiente);
-				$('#formFecha').val(d.FechaHora.slice(0,10));
-				setTime($('#formHora').val(d.hora + ':00'));
+				$('#formPartidoJornada').val(d.ID_Jornada).attr('disabled', !d.editable);
+				$('#equipo1').val(d.equipos[0].id).attr('disabled', !d.editable);
+				$('#equipo2').val(d.equipos[1].id).attr('disabled', !d.editable);
+				$('#tipoCancha').val(d.TipoCancha).attr('disabled', !d.editable);
+				$('#es_pendiente').val(d.Es_Pendiente).attr('disabled', !d.editable);
+				$('#formFecha').val(d.FechaHora.slice(0,10)).attr('disabled', !d.editable);
+				setTime($('#formHora').val(d.hora + ':00').attr('disabled', !d.editable));
 
+				if(d.editable)
+					$('#noEditable').hide();
+				else
+					$('#noEditable').show();
+				
 				for(var i = 0; i < 3; i++)
 					$('#formArbitro' + (i + 1)).val(d.arbitros[i]);
+				
+				var arbitroFaltas = d.arbitrosFaltas.split(',');
+				var afIndex = 0;
+				for(var i = 1; i < 4; i++)
+				{
+					for(var ii = 1; ii < 5; ii++)
+					{
+						$('#arbitroFaltas' + i + '' + ii).val(arbitroFaltas[afIndex].trim());
+						afIndex++;
+					}
+				}
 
 				formularioPartidoModal.modal('show').find('.modal-title').text('Edición de partido');
 

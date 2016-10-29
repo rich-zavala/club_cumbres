@@ -1,64 +1,45 @@
-CREATE TABLE `1557164_cumbres`.`arbitros` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(255) NOT NULL,
-  `telefono` VARCHAR(45) NULL,
-  `fechaRegistro` DATETIME NULL,
-  `activo` INT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`, `activo`));
-USE `1557164_cumbres`;
+DROP TRIGGER `dTorneo`;
 
-CREATE TABLE `1557164_cumbres`.`arbitrosSueldos` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `torneo` INT NOT NULL,
-  `sueldo1` DECIMAL(10,2) NOT NULL DEFAULT 0,
-  `sueldo2` DECIMAL(10,2) NOT NULL DEFAULT 0,
-  `sueldo3` DECIMAL(10,2) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`));
+CREATE TRIGGER `dTorneo` AFTER DELETE ON `torneos`
+FOR EACH ROW BEGIN
 
-CREATE TABLE `1557164_cumbres`.`arbitrosPartidos` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `partido` INT NOT NULL,
-  `arbitro1` INT NULL,
-  `arbitro2` INT NULL,
-  `arbitro3` INT NULL,
-  PRIMARY KEY (`id`));
+DELETE FROM torneos_cats where ID_Torneo=OLD.ID_Torneo;
+DELETE FROM arbitrossueldos WHERE torneo = OLD.ID_Torneo;
 
-DROP TRIGGER IF EXISTS 1557164_cumbres.arbitros_AFTER_DELETE;
-DROP TRIGGER IF EXISTS 1557164_cumbres.torneos_BEFORE_DELETE;
-DROP TRIGGER IF EXISTS 1557164_cumbres.arbitros_BEFORE_INSERT;
+END;
 
-DELIMITER $$
-USE `1557164_cumbres`$$
-CREATE TRIGGER `1557164_cumbres`.`arbitros_BEFORE_INSERT` BEFORE INSERT ON `arbitros` FOR EACH ROW
-BEGIN
-SET NEW.fechaRegistro = NOW();
-END$$
-DELIMITER ;
+CREATE TABLE `arbitrospartidosfaltas` (
+`id`  int NOT NULL AUTO_INCREMENT ,
+`partido`  int NULL ,
+`arbitro1faltas1`  int NULL DEFAULT 0 ,
+`arbitro1faltas2`  int NULL DEFAULT 0 ,
+`arbitro1faltas3`  int NULL DEFAULT 0 ,
+`arbitro2faltas1`  int NULL DEFAULT 0 ,
+`arbitro2faltas2`  int NULL DEFAULT 0 ,
+`arbitro2faltas3`  int NULL DEFAULT 0 ,
+`arbitro3faltas1`  int NULL DEFAULT 0 ,
+`arbitro3faltas2`  int NULL DEFAULT 0 ,
+`arbitro3faltas3`  int NULL DEFAULT 0 ,
+PRIMARY KEY (`id`)
+)
+;
 
-DELIMITER $$
-CREATE TRIGGER `1557164_cumbres`.`arbitros_AFTER_DELETE` AFTER DELETE ON `arbitros` FOR EACH ROW
-BEGIN
-DELETE FROM arbitrosPartidos WHERE arbitro1 = OLD.id;
-DELETE FROM arbitrosPartidos WHERE arbitro2 = OLD.id;
-DELETE FROM arbitrosPartidos WHERE arbitro3 = OLD.id;
-END$$
-DELIMITER ;
+ALTER TABLE `arbitrospartidosfaltas`
+CHANGE COLUMN `partido` `arbitrospartido`  int(11) NULL DEFAULT NULL AFTER `id`;
 
-DELIMITER $$
-USE `1557164_cumbres`$$
-CREATE TRIGGER `1557164_cumbres`.`torneos_BEFORE_DELETE` BEFORE DELETE ON `torneos` FOR EACH ROW
-BEGIN
-DELETE FROM arbitrosSueldos WHERE torneo = OLD.ID_Torneo;
-END$$
-DELIMITER ;
+CREATE TRIGGER `arbitroPartidoCreado` AFTER INSERT ON `arbitrospartidos`
+FOR EACH ROW INSERT INTO arbitrospartidosfaltas (arbitrospartido) values (NEW.id);;
 
-DELIMITER $$
-DROP TRIGGER IF EXISTS 1557164_cumbres.partido_equipos$$
-USE `1557164_cumbres`$$
-CREATE DEFINER=`root`@`127.0.0.1` TRIGGER `partido_equipos` AFTER DELETE ON `partidos` FOR EACH ROW BEGIN
-	DELETE FROM part_punt WHERE ID_Partido = OLD.ID_Partido;
-	DELETE FROM goles_jornadas WHERE ID_Partido = OLD.ID_Partido;
-	DELETE FROM part_gan_sout WHERE ID_Partido = OLD.ID_Partido;
-  DELETE FROM arbitrosPartidos WHERE partido = OLD.ID_Partido;
-END$$
-DELIMITER ;
+CREATE TRIGGER `arbitroPartidoEliminado` AFTER DELETE ON `arbitrospartidos`
+FOR EACH ROW DELETE FROM arbitrospartidosfaltas WHERE arbitrospartido = OLD.id;;
+
+ALTER TABLE `arbitrospartidosfaltas`
+ADD COLUMN `arbitro1faltas4`  int NULL AFTER `arbitro1faltas3`,
+ADD COLUMN `arbitro2faltas4`  int NULL AFTER `arbitro2faltas3`,
+ADD COLUMN `arbitro3faltas4`  int NULL AFTER `arbitro3faltas3`;
+
+ALTER TABLE `arbitrospartidosfaltas`
+MODIFY COLUMN `arbitro1faltas4`  int(11) NULL DEFAULT 0 AFTER `arbitro1faltas3`,
+MODIFY COLUMN `arbitro2faltas4`  int(11) NULL DEFAULT 0 AFTER `arbitro2faltas3`,
+MODIFY COLUMN `arbitro3faltas4`  int(11) NULL DEFAULT 0 AFTER `arbitro3faltas3`;
+

@@ -104,3 +104,8 @@
 .typeahead.dropdown-menu {
     width: 65%;
 }
+
+.table-arbitros .form-group{ margin-bottom: 0; }
+.header-errores{
+	 width: 14%;
+ }

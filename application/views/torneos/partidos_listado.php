@@ -101,6 +101,10 @@
 						if($partido->ganoSO == $partido->equipos[0]['id']) $ganador1 = '<i class="fa fa-trophy marginRight10" title="Ganador por shoot outs"></i> <span class="font11">(S.O.)</span>';
 						if($partido->ganoSO == $partido->equipos[1]['id']) $ganador2 = '<i class="fa fa-trophy marginLeft10" title="Ganador por shoot outs"></i> <span class="font11">(S.O.)</span>';
 					}
+					
+					//24 Oct 2016 > Agregar info de editable para formulario
+					$partido->editable = $editable;
+					
 					$href = base() . "torneo/partidos/puntaje/{$torneo}/{$categoria->ID_CatTorn}/{$grupo_actual->ID_VueltaGpo}/{$partido->ID_Partido}" . suffix();
 			?>
 				<tr>
@@ -125,8 +129,7 @@
 						<div class="tabla-fecha"><?=($partido->Es_Pendiente == 0 ? $partido->fecha . ", " . $partido->hora : '<i>Pendiente</i>')?></div>
 						<div class="tabla-cancha text-center"><span class="label label-default" title="<?=canchaTxt($partido->TipoCancha)?>"><?=cancha($partido->TipoCancha)?></span></div>
 						<div class="btn-group marginLeft10">
-							<a type="button" class="btn btn-xs btn-success <?=$editable ? 'partido-editar' : 'partido-no-editable'?>" title="<?=$editable ? 'Editar partido' : 'Este partido ya tiene puntaje establecido. No se puede editar.'?>" data-info="<?=htmlentities(json_encode($partido))?>"><i class="fa fa-<?=$editable ? 'pencil' : 'ban'?>"></i></a>
-							<!--<a type="button" class="btn btn-xs btn-primary partido-puntaje" title="Editar puntaje"><i class="fa fa-table"></i></a>-->
+							<a type="button" class="btn btn-xs btn-success partido-editar" title="Editar partido" data-info="<?=htmlentities(json_encode($partido))?>"><i class="fa fa-pencil"></i></a>
 							<a href="<?=base()?>torneo/print_cedulas/imprimir/<?=$partido->ID_Partido.suffix()?>" target="_new" type="button" class="btn btn-xs btn-info" title="Imprimir cédula"><i class="fa fa-print"></i></a>
 							<a type="button" class="btn btn-xs btn-warning partido-eliminar" title="Eliminar partido" data-id="<?=$partido->ID_Partido?>" data-jornada="<?=$jornada->ID_Jornada?>"><i class="fa fa-remove"></i></a>
 						</div>
@@ -196,7 +199,7 @@
 </div>
 
 <div class="modal fade" id="modalFormularioPartido">
-  <div class="modal-dialog" id="modalFormularioPartidoContenido">
+  <div class="modal-dialog modal-lg" id="modalFormularioPartidoContenido">
 		<form method="post" id="partidoForm" class="modal-content">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -207,6 +210,8 @@
 					<?php if(count($grupo_actual->equipos) < 2){ ?>
 					<div class="alert alert-warning margin0"><i class="fa fa-warning"></i> No hay equipos suficientes para crear un partido.</div>
 					<?php } else { ?>
+					
+					<div id="noEditable" class="alert alert-warning"><i class="fa fa-fw fa-warning"></i> La información no puede ser editada, pues el partido ha concluido.</div>
 					<label for="equipo1" class="marginBottom5">Elija los equipos que se enfrentarán</label>
 					<div class="row">
 						<div class="col-xs-5">
@@ -281,53 +286,85 @@
           <hr>
           <div class="row">
             <div class="col-xs-12">
-              <div class="form-horizontal">
-                <div class="form-group">
-                  <label for="formArbitro1" class="col-sm-3 control-label text-left">Árbitro central</label>
-                  <div class="col-sm-9">
-                    <select type="text" class="form-control" id="formArbitro1" name="formArbitro1">
-              				<option value="">-- Ninguno --</option>
-              				<?php foreach($arbitros as $arbitro){ ?>
-              					<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro1)?>><?=$arbitro->nombre?></option>
-              				<?php } ?>
-              			</select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="form-horizontal">
-                <div class="form-group">
-                  <label for="formArbitro2" class="col-sm-3 control-label text-left">Árbitro auxiliar 1</label>
-                  <div class="col-sm-9">
-                    <select type="text" class="form-control" id="formArbitro2" name="formArbitro2">
-              				<option value="">-- Ninguno --</option>
-              				<?php foreach($arbitros as $arbitro){ ?>
-              					<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro2)?>><?=$arbitro->nombre?></option>
-              				<?php } ?>
-              			</select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="form-horizontal">
-                <div class="form-group">
-                  <label for="formArbitro3" class="col-sm-3 control-label text-left">Árbitro auxiliar 2</label>
-                  <div class="col-sm-9">
-                    <select type="text" class="form-control" id="formArbitro3" name="formArbitro3">
-                      <option value="">-- Ninguno --</option>
-                      <?php foreach($arbitros as $arbitro){ ?>
-                        <option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro3)?>><?=$arbitro->nombre?></option>
-                      <?php } ?>
-                    </select>
-                  </div>
-                </div>
-              </div>
+							<table class="table table-bordered table-condensed table-arbitros">
+								<thead>
+									<tr>
+										<th class="text-center active" rowspan="2">Árbitros</th>
+										<th colspan="4" class="text-center bg-primary">Errores cometidos</th>
+									</tr>
+									<tr class="active">
+										<th class="text-center header-errores">No firmó</th>
+										<th class="text-center header-errores">Puso goles incompletos</th>
+										<th class="text-center header-errores">Informe inconcluso</th>
+										<th class="text-center header-errores">Información errónea</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<div class="form-horizontal">
+												<div class="form-group">
+													<label for="formArbitro1" class="col-sm-3 control-label text-left">Central</label>
+													<div class="col-sm-9">
+														<select type="text" class="form-control" id="formArbitro1" name="formArbitro1">
+															<option value="">-- Ninguno --</option>
+															<?php foreach($arbitros as $arbitro){ ?>
+																<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro1)?>><?=$arbitro->nombre?></option>
+															<?php } ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</td>
+										<?php for($i = 1; $i <5 ; $i++){ ?>
+										<td><input class="form-control" name="arbitro1faltas<?=$i?>" id="arbitroFaltas1<?=$i?>" type="number" /></td>
+										<?php } ?>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-horizontal">
+												<div class="form-group">
+													<label for="formArbitro2" class="col-sm-3 control-label text-left">Auxiliar 1</label>
+													<div class="col-sm-9">
+														<select type="text" class="form-control" id="formArbitro2" name="formArbitro2">
+															<option value="">-- Ninguno --</option>
+															<?php foreach($arbitros as $arbitro){ ?>
+																<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro2)?>><?=$arbitro->nombre?></option>
+															<?php } ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</td>
+										<?php for($i = 1; $i <5 ; $i++){ ?>
+										<td><input class="form-control" name="arbitro2faltas<?=$i?>" id="arbitroFaltas2<?=$i?>" type="number" /></td>
+										<?php } ?>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-horizontal">
+												<div class="form-group">
+													<label for="formArbitro3" class="col-sm-3 control-label text-left">Auxiliar 2</label>
+													<div class="col-sm-9">
+														<select type="text" class="form-control" id="formArbitro3" name="formArbitro3">
+															<option value="">-- Ninguno --</option>
+															<?php foreach($arbitros as $arbitro){ ?>
+																<option value="<?=$arbitro->id?>" <?=selected($arbitro->id, @$arbitros->arbitro3)?>><?=$arbitro->nombre?></option>
+															<?php } ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</td>
+										<?php for($i = 1; $i <5 ; $i++){ ?>
+										<td><input class="form-control" name="arbitro3faltas<?=$i?>" id="arbitroFaltas3<?=$i?>" type="number" /></td>
+										<?php } ?>
+									</tr>
+								</tbody>
+							</table>
+							
+						
+              
             </div>
           </div>
 

@@ -92,7 +92,6 @@ class Torneos extends CI_Controller {
 
 			//Sueldos de árbitros
 			$t->sueldos = array(
-				'torneo' => $id,
 				'sueldo1' => (float) $this->input->post('sueldo1', true),
 				'sueldo2' => (float) $this->input->post('sueldo2', true),
 				'sueldo3' => (float) $this->input->post('sueldo3', true)
