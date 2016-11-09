@@ -382,10 +382,12 @@
 				<div class="modal-footer form-footer-botones">
 					<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
 					<?php if(count($equipos) >= 2){ ?>
-					<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Registrar partido</button>
+					<button type="submit" value="guardar" class="btn btn-info partidoSubmitButton"><i class="fa fa-save"></i> Guardar cambios</button>
+					<button type="submit" value="notificar" class="btn btn-primary partidoSubmitButton"><i class="fa fa-paper-plane"></i> Registrar partido y notificar</button>
 					<?php } ?>
 				</div>
 			</div>
+			<input type="hidden" name="partidoFormularioSubmitTipo" />
     </form>
 	</div>
 </div>

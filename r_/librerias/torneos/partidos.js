@@ -147,6 +147,11 @@ $().ready(function(){
 	//Inicializar formulario de partido
 	function partidoFormulario()
 	{
+		//Evento especial para definir qué botón presioné
+		$('.partidoSubmitButton').click(function(){
+			$('[name="partidoFormularioSubmitTipo"]').val(this.value);
+		});
+		
 		var formularioPartido = $('#partidoForm');
 		function partidoCrear()
 		{

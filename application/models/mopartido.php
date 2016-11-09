@@ -34,6 +34,7 @@ class Mopartido extends CI_Model
 	//Información de los árbitros de un partido
 	var $arbitros = array();
 	var $arbitrosFaltas = array();
+	var $tipoGuardar = null;
 
 	//Crear dateTime
 	private function fechaHora(){ if($this->fecha != '' and $this->hora != '')  $this->fecha = $this->fecha . ' ' . $this->hora; }
@@ -75,6 +76,13 @@ class Mopartido extends CI_Model
 	public function addArbitrosFalta($indice, $valor)
 	{
 		$this->arbitrosFaltas[$indice] = $valor;
+	}
+	
+	public function tipoGuardar($s){
+		if($s == 'notificar' or $s == 'guardar')
+			$this->tipoGuardar = $s;
+		else
+			show_error("Se esperaba un identificador de guardado.");
 	}
 
 	/*
@@ -182,7 +190,7 @@ class Mopartido extends CI_Model
 				$r['error'] = 5.5;
 
 		//Notificar jugadores
-		if($r['error'] == 0 and !$this->notificar()) $r['error'] = 6;
+		if($r['error'] == 0 and $this->tipoGuardar == 'notificar' and !$this->notificar()) $r['error'] = 6;
 
 		//Rollback!!!
 		if($r['error'] > 0)
@@ -219,7 +227,7 @@ class Mopartido extends CI_Model
 			if($r['error'] == 0 and !$this->agregar_equipos($this->id)) $r['error'] = 5;
 
 			//Notificar jugadores
-			if($r['error'] == 0 and !$this->notificar()) $r['error'] = 6;
+			if($r['error'] == 0 and $this->tipoGuardar == 'notificar' and !$this->notificar()) $r['error'] = 6;
 		}
 		else
 			$r['error'] = 0;

@@ -216,6 +216,7 @@ class Partidos extends CI_Controller {
 			$p->fecha($this->input->post('partidoFecha', true));
 			$p->hora($this->input->post('partidoHora', true));
 			$p->pendiente((int)$this->input->post('es_pendiente', true) == 1);
+			$p->tipoGuardar($this->input->post('partidoFormularioSubmitTipo', true));
 
 			/*
 			Ricardo 26 oct 2015
