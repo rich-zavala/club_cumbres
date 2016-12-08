@@ -197,3 +197,7 @@ function sanitize($s)
 	$s = preg_replace("([^\w\s\d\-_~,;:\[\]\(\).])", '', $s);
 	return strtolower(preg_replace("([\.]{2,})", '', $s));
 }
+function money($num)
+{
+	return number_format($num, 2);
+}

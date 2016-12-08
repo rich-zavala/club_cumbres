@@ -17,7 +17,7 @@ $().ready(function(){
 	$('#editarTorneo').click(function(e){
 		e.preventDefault();	
 		// $('#formAgno').val(currAgno);
-		$('#modalFormulario').modal('show').find('.modal-title').text('Creación de nuevo torneo');
+		$('#modalFormulario').modal('show').find('.modal-title').text('Edición de torneo');
 	});
 	
 	//Validaciones de formulario
@@ -65,6 +65,12 @@ $().ready(function(){
 		e.preventDefault();
 		$('#modalFormularioPartidosCancha').modal('show');
 	});
+	
+	//Reporte de salarios
+	$('#reporteSueldos').click(function(e){
+		e.preventDefault();
+		$('#modalFormularioSueldos').modal('show');
+	});
 });
 	
 //Campo de fecha
@@ -74,8 +80,10 @@ function setDatePicker()
 	{
 		$('.date').datepicker({
 			format: 'yyyy-mm-dd',
-			autoclose: true
-		});
+			autoclose: true,
+			language: 'es',
+			forceParse: true
+		}).attr('placeholder', 'yyyy-mm-dd').attr('readonly', fale);
 	} catch(e){ c('No JS > datepicker'); }
 }
 
@@ -92,7 +100,10 @@ function setTimePicker()
 			selectOnBlur: true,
 			show2400: true,
 			step: 15,
-			orientation: 'top'
+			orientation: 'top',
+			language: 'es'
 		});
 	} catch(e){ c('No JS > timepicker'); }
 }
+
+!function(a){a.fn.datepicker.dates.es={days:["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],daysShort:["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"],daysMin:["Do","Lu","Ma","Mi","Ju","Vi","Sa"],months:["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],monthsShort:["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"],today:"Hoy",clear:"Borrar",weekStart:1,format:"dd/mm/yyyy"}}(jQuery);

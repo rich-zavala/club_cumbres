@@ -33,26 +33,42 @@
 
 					<hr>
 					<h4>Sueldos de árbitros por partido</h4>
-
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="form-group">
 								<label for="sueldo1">Árbitro 1</label>
-								<input type="number" class="form-control" id="sueldo1" name="sueldo1" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo1?>" required>
+								<input type="number" class="form-control" id="sueldo1" name="sueldo1" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->sueldo1?>" required>
 								<div class="help-block with-errors"></div>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="form-group">
 								<label for="sueldo2">Árbitro 2</label>
-								<input type="number" class="form-control" id="sueldo2" name="sueldo2" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo2?>" required>
+								<input type="number" class="form-control" id="sueldo2" name="sueldo2" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->sueldo2?>" required>
 								<div class="help-block with-errors"></div>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="form-group">
 								<label for="sueldo3">Crono</label>
-								<input type="number" class="form-control" id="sueldo3" name="sueldo3" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros->sueldo3?>" required>
+								<input type="number" class="form-control" id="sueldo3" name="sueldo3" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->sueldo3?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+					
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="sueldo3">Mesa</label>
+								<input type="number" class="form-control" id="sueldo4" name="sueldo4" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->sueldo4?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="sueldo3">Servicio de arbitraje</label>
+								<input type="number" class="form-control" id="sueldo5" name="sueldo5" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->sueldo5?>" required>
 								<div class="help-block with-errors"></div>
 							</div>
 						</div>

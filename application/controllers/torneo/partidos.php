@@ -218,6 +218,11 @@ class Partidos extends CI_Controller {
 			$p->pendiente((int)$this->input->post('es_pendiente', true) == 1);
 			$p->tipoGuardar($this->input->post('partidoFormularioSubmitTipo', true));
 
+			$p->servicio1($this->input->post('servicio1', true));
+			$p->servicio2($this->input->post('servicio2', true));
+			$p->equipoS1($this->input->post('equipoS1', true));
+			$p->equipoS2($this->input->post('equipoS2', true));
+			
 			/*
 			Ricardo 26 oct 2015
 			Se reportó un error en el que sólamente se registraba un equipo.

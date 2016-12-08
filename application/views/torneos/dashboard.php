@@ -30,6 +30,7 @@
 				<li class="list-group-item"><a href="#" id="editarTorneo"><i class="fa fa-fw fa-pencil"></i> Editar información del torneo</a></li>
 				<li class="list-group-item"><a href="#" id="partidosPorCancha"><i class="fa fa-fw fa-tasks"></i> Lista de partidos por cancha</a></li>
 				<li class="list-group-item"><a href="<?=base()?>torneo/sanciones/listado/<?=$info->ID_Torneo.suffix()?>"><i class="fa fa-fw fa-bullhorn"></i> Actualizar sancionados</a></li>
+				<li class="list-group-item"><a href="#" id="reporteSueldos"><i class="fa fa-fw fa-file-excel-o"></i> Reporte de sueldos</a></li>
 			</ul>
 		</div>
 
@@ -72,6 +73,7 @@
 		?>
 	</div>
 </div>
+
 <!-- Formulario de partidos por cancha -->
 <div class="modal fade" id="modalFormularioPartidosCancha">
   <div class="modal-dialog" id="modalFormularioPartidosCanchaContenido">
@@ -104,6 +106,46 @@
 									<option value="2">Profesional</option>
 								</select>
 								<div class="help-block with-errors"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+					<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Generar</button>
+				</div>
+			</div>
+			<input type="hidden" name="torneo" value="<?=$_torneo?>">
+		</form>
+	</div>
+</div>
+
+<!-- Formulario de reporte de sueldos -->
+<div class="modal fade" id="modalFormularioSueldos">
+  <div class="modal-dialog" id="modalFormularioSueldosContenido">
+		<form method="get" action="<?=base()?>torneo/reporte_sueldos/imprimir<?=suffix()?>" class="modal-content" target="_new">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Generar reporte de sueldos</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="alert alert-info"><i class="fa fa-fw fa-info-circle"></i> Seleccione el período de los partidos para generar el reporte</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6">
+							<div class="form-group marginBottom0">
+								<label for="fechaInicial">Fecha inicial</label>
+								<input type="text" class="form-control date" id="fechaInicialSueldos" name="fechaInicial" data-minlength="10" data-error="Especifique la fecha inicial" readonly required>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="form-group marginBottom0">
+								<label for="fechaFinal">Fecha final</label>
+								<input type="text" class="form-control date" id="fechaFinalSueldos" name="fechaFinal" data-minlength="10" data-error="Especifique la fecha final" readonly required>
 							</div>
 						</div>
 					</div>

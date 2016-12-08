@@ -34,6 +34,9 @@ class Print_partidos_cancha extends CI_Controller {
 				->where('TipoCancha', $tipo)
 				->order_by('p.FechaHora, p.ID_Partido')
 				->get('partidos p');
+				
+				// echo $this->db->last_query();
+				
 		if($q->num_rows() == 0)
 		{
 			echo "<h1>No hay partidos disponibles.</h1>";

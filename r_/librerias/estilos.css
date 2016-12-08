@@ -109,3 +109,19 @@
 .header-errores{
 	 width: 14%;
  }
+ 
+ /* 7 dic 2016  Tabla de reportes */
+ #reporte_contenedor .container-fluid{
+	background: white;
+	border: 1px solid #ececec;
+	margin: 0 20px;
+	border-radius: 6px;
+	padding: 10px;
+ }
+ #reporte_contenedor .cedula_completa{
+	max-width: 1300px;
+ }
+ .tabla-sumas{
+  width: auto;
+  min-width: 330px;
+}

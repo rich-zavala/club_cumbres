@@ -30,6 +30,11 @@ class Mopartido extends CI_Model
 	var $pendiente = false;
 	var $fecha = '';
 	var $hora = '';
+	
+	var $servicio1 = 0;
+	var $servicio2 = 0;
+	var $equipoS1 = 0;
+	var $equipoS2 = 0;
 
 	//Información de los árbitros de un partido
 	var $arbitros = array();
@@ -45,6 +50,12 @@ class Mopartido extends CI_Model
 	public function equipo2($i){ (int)$this->equipo2 = $i; }
 	public function jornada($i){ (int)$this->jornada = (int)$i; }
 	public function cancha($i){ (int)$this->cancha = $i; }
+	
+	public function servicio1($i){ $this->servicio1 = ((int)$i == 1 or strlen(trim($i)) > 0) ? 1 : 0; }
+	public function servicio2($i){ $this->servicio2 = ((int)$i == 1 or strlen(trim($i)) > 0) ? 1 : 0; }
+	public function equipoS1($i){ $this->equipoS1 = (int)$i; }
+	public function equipoS2($i){ $this->equipoS2 = (int)$i; }
+	
 	public function fecha($i){
 		(int)$this->fecha = $i;
 		$this->fechaHora();
@@ -149,13 +160,16 @@ class Mopartido extends CI_Model
 		$i = array(
 			array(
 				'ID_Partido' => $partido,
-				'ID_Equipo' => $this->equipo1
+				'ID_Equipo' => $this->equipo1,
+				'pago_servicio' => $this->servicio1
 			),
 			array(
 				'ID_Partido' => $partido,
-				'ID_Equipo' => $this->equipo2
+				'ID_Equipo' => $this->equipo2,
+				'pago_servicio' => $this->servicio2
 			)
 		);
+		
 		return $this->db->insert_batch('part_punt', $i);
 	}
 
@@ -230,12 +244,20 @@ class Mopartido extends CI_Model
 			if($r['error'] == 0 and $this->tipoGuardar == 'notificar' and !$this->notificar()) $r['error'] = 6;
 		}
 		else
+		{
 			$r['error'] = 0;
+			
+			//Actualizar sólamente servicios
+			$this->db->where(array( 'ID_Partido' => $this->id, 'ID_Equipo' => $this->equipoS1))->update('part_punt', array( 'pago_servicio' => $this->servicio1 ));
+			$this->db->where(array( 'ID_Partido' => $this->id, 'ID_Equipo' => $this->equipoS2))->update('part_punt', array( 'pago_servicio' => $this->servicio2 ));
+		}
 
 		//Registrar arbitros
 		if($r['error'] == 0)
 			if(!$this->insertarArbitros())
 				$r['error'] = 5.5;
+			
+		
 
 		return $r;
 	}

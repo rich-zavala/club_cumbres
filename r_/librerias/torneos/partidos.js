@@ -192,6 +192,12 @@ $().ready(function(){
 				$('#formPartidoJornada').val(d.ID_Jornada).attr('disabled', !d.editable);
 				$('#equipo1').val(d.equipos[0].id).attr('disabled', !d.editable);
 				$('#equipo2').val(d.equipos[1].id).attr('disabled', !d.editable);
+				
+				$('#servicio1').prop('checked', (parseInt(d.equipos[0].servicio) === 1));
+				$('#servicio2').prop('checked', (parseInt(d.equipos[1].servicio) === 1));
+				$("#equipoS1").val(d.equipos[0].id);
+				$("#equipoS2").val(d.equipos[1].id);
+				
 				$('#tipoCancha').val(d.TipoCancha).attr('disabled', !d.editable);
 				$('#es_pendiente').val(d.Es_Pendiente).attr('disabled', !d.editable);
 				$('#formFecha').val(d.FechaHora.slice(0,10)).attr('disabled', !d.editable);

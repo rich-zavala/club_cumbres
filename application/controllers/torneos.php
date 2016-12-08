@@ -94,7 +94,9 @@ class Torneos extends CI_Controller {
 			$t->sueldos = array(
 				'sueldo1' => (float) $this->input->post('sueldo1', true),
 				'sueldo2' => (float) $this->input->post('sueldo2', true),
-				'sueldo3' => (float) $this->input->post('sueldo3', true)
+				'sueldo3' => (float) $this->input->post('sueldo3', true),
+				'sueldo4' => (float) $this->input->post('sueldo4', true),
+				'sueldo5' => (float) $this->input->post('sueldo5', true)
 			);
 
 			if($id == 0)

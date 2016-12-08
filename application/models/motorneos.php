@@ -72,7 +72,7 @@ class Motorneos extends CI_Model
 			->join('equipos_catalog', 'torneos_cats.ID_CatTorn = equipos_catalog.ID_CatTorn AND torneos_cats.ID_CatTorn = equipos_catalog.ID_CatTorn', 'inner')
 			->where( 'torneos_cats.ID_Torneo', $this->id)
 			->where('torneos_cats.ID_CatTorn IN (' . implode($catsIds, ',') . ')')
-			->order_by('cat_catalog.ID_Cat,  equipos_catalog.NomEquipo')
+			->order_by('cat_catalog.ID_Cat, equipos_catalog.NomEquipo')
 			->get('torneos_cats');
 		}
 		else //Mostrar error: Eliminó todas las categorías
@@ -83,7 +83,7 @@ class Motorneos extends CI_Model
 		foreach($q->result() as $e) $r->equipos[$e->ID_CatTorn][] = $e;
 
 		//Agregar información de los árbitros
-		$r->arbitros = $this->db->where('torneo', $this->id)->get('arbitrosSueldos')->row();
+		$r->arbitros_sueldos = $this->db->where('torneo', $this->id)->get('arbitrosSueldos')->row();
 
 		return $r;
 	}
@@ -183,7 +183,7 @@ class Motorneos extends CI_Model
 																		DATE_FORMAT(FechaHora, "%W %d/%b/%Y") fecha,
 																		DATE_FORMAT(FechaHora, "%H:%i") hora,
 																		p.Es_Pendiente, Punt_Fue_Asig, p.TipoCancha,
-																		GROUP_CONCAT(CONCAT(pp.ID_Equipo, "|", pp.Puntaje) ORDER BY pp.ID_Equipo) equipos,
+																		GROUP_CONCAT(CONCAT(pp.ID_Equipo, "|", pp.Puntaje, "|", pago_servicio) ORDER BY pp.ID_Equipo) equipos,
 																		IFNULL(ps.ID_Equipo, 0) ganoSO,
 																		CONCAT(IFNULL(ap.arbitro1, ""), "|", IFNULL(ap.arbitro2, ""), "|", IFNULL(ap.arbitro3, "")) arbitros,
 																		CONCAT(IFNULL(arbitro1faltas1,"0"),",",IFNULL(arbitro1faltas2,"0"),",",IFNULL(arbitro1faltas3,"0"),",",
@@ -199,6 +199,8 @@ class Motorneos extends CI_Model
 						->group_by('p.ID_Partido')
 						->order_by('FechaHora')
 						->get('jornadas');
+						
+						// echo $this->db->last_query();
 					}
 
 					foreach($r[$k]->jornadas as $kj => $jor)
@@ -229,7 +231,8 @@ class Motorneos extends CI_Model
 									$partido->equipos[] = array(
 										'id' => $equipo_puntaje[0],
 										'nombre' => $nombre,
-										'puntaje' => $equipo_puntaje[1]
+										'puntaje' => $equipo_puntaje[1],
+										'servicio' => $equipo_puntaje[2]
 									);
 
 									if(!is_array($partido->arbitros))
