@@ -72,6 +72,13 @@
 								<div class="help-block with-errors"></div>
 							</div>
 						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="sueldo3">Descuento por errores</label>
+								<input type="number" class="form-control" id="descuento" name="descuento" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->descuento?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</div>
 					</div>
 					<input type="hidden" id="formId" name="id" value="<?=@(int)$ID_Torneo?>" />
 					<input type="hidden" name="referer" value="<?=current_url()?>" />

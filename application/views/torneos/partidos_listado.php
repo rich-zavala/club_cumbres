@@ -235,7 +235,7 @@
 					
 					<div class="row marginTop10">
 						<div class="col-xs-5">
-							<div class="checkbox">
+							<div class="checkbox marginBottom0">
 								<label>
 									<input type="checkbox" id="servicio1" name="servicio1" />
 									<input type="hidden" id="equipoS1" name="equipoS1" />
@@ -244,7 +244,7 @@
 							</div>
 						</div>
 						<div class="col-xs-5 col-xs-offset-2 text-right">
-							<div class="checkbox">
+							<div class="checkbox marginBottom0">
 								<label>
 									<input type="checkbox" id="servicio2" name="servicio2" />
 									<input type="hidden" id="equipoS2" name="equipoS2" />
@@ -385,8 +385,13 @@
 								</tbody>
 							</table>
 							
-						
-              
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" id="liguilla" name="liguilla" value="1" />
+									Partido de liguilla <span class="text-muted">(Considerar costos como cancha profesional)</span>.
+								</label>
+								
+							</div>
             </div>
           </div>
 

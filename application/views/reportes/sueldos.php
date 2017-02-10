@@ -47,7 +47,7 @@
 							$primera_cancha = 0;
 							foreach($fecha as $k => $e){ //Por cada cancha ($e = evento)
 								if($primera_cancha !== 0 or $primera_cancha !== $k){ ?>
-							<tr><th colspan="12" class="text-center warning">Cancha <?=($k == 1) ? 'chica' : 'grande'?></th></tr>
+							<tr><th colspan="12" class="text-center warning">Cancha <?=($k == 1) ? 'chica' : 'profesional'?></th></tr>
 							<?php
 								}
 								foreach($e as $p){ // Por cada partido
@@ -103,8 +103,5 @@
 				</td>
 			</tr>
 		</table>
-		
-		<?=p($fechas)?>
-		<?=p($sumas)?>
 	</div>
 </div>

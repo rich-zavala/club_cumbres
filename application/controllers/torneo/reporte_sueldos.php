@@ -18,14 +18,15 @@ class Reporte_sueldos extends CI_Controller {
 		$f1 = $this->input->get('fechaInicial', true);
 		$f2 = $this->input->get('fechaFinal', true);
 		
+		//Acumular datos
+		$fechas = array();
+		$sumas = array();
+		
 		$q = $this->db->where('FechaHora BETWEEN "' . $f1 . ' 00:00:01" AND "' . $f2 . ' 23:59:59"')
 		->where('ID_Torneo', $torneo)->order_by('FechaHora ASC, TipoCancha ASC')->get('reporte_sueldos');
 		
 		if($q->num_rows() > 0)
 		{
-			//Acumular datos
-			$fechas = array();
-			$sumas = array();
 			foreach($q->result() as $r)
 			{
 				if(!isset($fechas[$r->fechaId])) //Índice de fecha

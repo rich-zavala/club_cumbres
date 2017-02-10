@@ -27,6 +27,7 @@ class Mopartido extends CI_Model
 	var $equipo2 = 0;
 	var $jornada = 0;
 	var $cancha = 0;
+	var $liguilla = 0;
 	var $pendiente = false;
 	var $fecha = '';
 	var $hora = '';
@@ -50,6 +51,7 @@ class Mopartido extends CI_Model
 	public function equipo2($i){ (int)$this->equipo2 = $i; }
 	public function jornada($i){ (int)$this->jornada = (int)$i; }
 	public function cancha($i){ (int)$this->cancha = $i; }
+	public function liguilla($i){ $this->liguilla = (int)$i === 1 ? 1 : 0; }
 	
 	public function servicio1($i){ $this->servicio1 = ((int)$i == 1 or strlen(trim($i)) > 0) ? 1 : 0; }
 	public function servicio2($i){ $this->servicio2 = ((int)$i == 1 or strlen(trim($i)) > 0) ? 1 : 0; }
@@ -146,10 +148,11 @@ class Mopartido extends CI_Model
 	public function active_array()
 	{
 		return  array(
-						'ID_Jornada' => $this->jornada,
-						'FechaHora' => $this->fecha,
-						'Es_Pendiente' => $this->pendiente ? 1 : 0,
-						'TipoCancha' => $this->cancha
+						'ID_Jornada' 		=> $this->jornada,
+						'FechaHora' 		=> $this->fecha,
+						'Es_Pendiente'	=> $this->pendiente ? 1 : 0,
+						'TipoCancha' 		=> $this->cancha,
+						'liguilla' 			=> $this->liguilla
 					);
 	}
 
@@ -235,7 +238,7 @@ class Mopartido extends CI_Model
 				else
 					$r['id'] = $this->id;
 			}
-
+		
 			//Registrar equipos
 			if($r['error'] == 0 and !$this->db->where('ID_Partido', $this->id)->delete('part_punt')) $r['error'] = 5;
 			if($r['error'] == 0 and !$this->agregar_equipos($this->id)) $r['error'] = 5;

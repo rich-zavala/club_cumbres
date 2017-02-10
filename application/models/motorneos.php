@@ -183,6 +183,7 @@ class Motorneos extends CI_Model
 																		DATE_FORMAT(FechaHora, "%W %d/%b/%Y") fecha,
 																		DATE_FORMAT(FechaHora, "%H:%i") hora,
 																		p.Es_Pendiente, Punt_Fue_Asig, p.TipoCancha,
+																		p.liguilla,
 																		GROUP_CONCAT(CONCAT(pp.ID_Equipo, "|", pp.Puntaje, "|", pago_servicio) ORDER BY pp.ID_Equipo) equipos,
 																		IFNULL(ps.ID_Equipo, 0) ganoSO,
 																		CONCAT(IFNULL(ap.arbitro1, ""), "|", IFNULL(ap.arbitro2, ""), "|", IFNULL(ap.arbitro3, "")) arbitros,
