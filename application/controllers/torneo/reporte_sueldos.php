@@ -23,7 +23,7 @@ class Reporte_sueldos extends CI_Controller {
 		$sumas = array();
 		
 		$q = $this->db->where('FechaHora BETWEEN "' . $f1 . ' 00:00:01" AND "' . $f2 . ' 23:59:59"')
-		->where('ID_Torneo', $torneo)->order_by('FechaHora ASC, TipoCancha ASC')->get('reporte_sueldos');
+		->where('ID_Torneo', $torneo)->order_by('TipoCancha ASC, FechaHora ASC')->get('reporte_sueldos');
 		
 		if($q->num_rows() > 0)
 		{

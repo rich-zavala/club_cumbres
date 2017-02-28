@@ -106,6 +106,8 @@
 }
 
 .table-arbitros .form-group{ margin-bottom: 0; }
+.table-arbitros input { min-width: 80px; }
+
 .header-errores{
 	 width: 14%;
  }

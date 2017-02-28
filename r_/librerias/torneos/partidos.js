@@ -200,7 +200,7 @@ $().ready(function(){
 				
 				$('#tipoCancha').val(d.TipoCancha).attr('disabled', !d.editable);
 				$('#es_pendiente').val(d.Es_Pendiente).attr('disabled', !d.editable);
-				$('#liguilla').prop('checked', parseInt(d.liguilla) === 1).attr('disabled', !d.editable);
+				$('#liguilla').prop('checked', parseInt(d.liguilla) === 1); //.attr('disabled', !d.editable);
 				$('#formFecha').val(d.FechaHora.slice(0,10)).attr('disabled', !d.editable);
 				setTime($('#formHora').val(d.hora + ':00').attr('disabled', !d.editable));
 

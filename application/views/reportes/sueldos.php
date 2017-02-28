@@ -24,7 +24,7 @@
 					<table class="table table-bordered table-condensed table-hover marginTop10">
 						<thead>
 							<tr>
-								<th colspan="12" class="text-center info"><?=$fecha_letras?></th>
+								<th colspan="13" class="text-center info"><?=$fecha_letras?></th>
 							</tr>
 							<tr class="active">
 								<th>Hora</th>
@@ -39,6 +39,7 @@
 								<th>Crono</th>
 								<th>Pago</th>
 								<th>Mesa</th>
+								<th>Total partido</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -47,10 +48,15 @@
 							$primera_cancha = 0;
 							foreach($fecha as $k => $e){ //Por cada cancha ($e = evento)
 								if($primera_cancha !== 0 or $primera_cancha !== $k){ ?>
-							<tr><th colspan="12" class="text-center warning">Cancha <?=($k == 1) ? 'chica' : 'profesional'?></th></tr>
+							<tr><th colspan="13" class="text-center warning">Cancha <?=($k == 1) ? 'chica' : 'profesional'?></th></tr>
 							<?php
 								}
+								$total = 0;
 								foreach($e as $p){ // Por cada partido
+									$total = $p->arbitroSueldo1 +  $p->arbitroSueldo2 + $p->cronoSueldo + $p->mesa
+												+ ($p->servicio * $p->equipos[0]['pago'])
+												+ ($p->servicio * $p->equipos[1]['pago']);
+
 							?>
 							<tr>
 								<td><?=$p->hora?></td>
@@ -61,10 +67,11 @@
 								<td><?=$p->arbitroNombre1?></td>
 								<td><?=$p->arbitroSueldo1 > 0 ? money($p->arbitroSueldo1) : '<span class="text-muted">No hubo</span>'?></td>
 								<td><?=$p->arbitroNombre2?></td>
-								<td><?=$p->arbitroSueldo2 > 0 ? money($p->arbitroSueldo1) : '<span class="text-muted">No hubo</span>'?></td>
+								<td><?=$p->arbitroSueldo2 > 0 ? money($p->arbitroSueldo2) : '<span class="text-muted">No hubo</span>'?></td>
 								<td><?=$p->crono?></td>
 								<td><?=$p->cronoSueldo > 0 ? money($p->cronoSueldo) : '<span class="text-muted">No hubo</span>'?></td>
 								<td><?=$p->mesa?></td>
+								<td><?=money($total)?></td>
 							</tr>
 							<?php
 								}

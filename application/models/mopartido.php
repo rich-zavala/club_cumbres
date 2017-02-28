@@ -221,6 +221,8 @@ class Mopartido extends CI_Model
 
 	public function actualizar()
 	{
+				$i = $this->active_array();
+				
 		/*24 Oct 2016 - Si no tiene jornada entonces es edición de árbitros*/
 		if($this->jornada > 0)
 		{
@@ -232,7 +234,6 @@ class Mopartido extends CI_Model
 			//Registrar partido
 			if($r['error'] == 0)
 			{
-				$i = $this->active_array();
 				if(!$this->db->where('ID_Partido', $this->id)->update('partidos', $i))
 					$r['error'] = 4;
 				else
@@ -253,14 +254,19 @@ class Mopartido extends CI_Model
 			//Actualizar sólamente servicios
 			$this->db->where(array( 'ID_Partido' => $this->id, 'ID_Equipo' => $this->equipoS1))->update('part_punt', array( 'pago_servicio' => $this->servicio1 ));
 			$this->db->where(array( 'ID_Partido' => $this->id, 'ID_Equipo' => $this->equipoS2))->update('part_punt', array( 'pago_servicio' => $this->servicio2 ));
+			
+			//27 Feb 2017 - Se debe actualizar todo por si cambió a liguilla
+			$liguilla = array( "liguilla" => $i["liguilla"] );
+			if(!$this->db->where('ID_Partido', $this->id)->update('partidos', $liguilla)){
+				$r['error'] = 5.1;
+			}
+			
 		}
 
 		//Registrar arbitros
 		if($r['error'] == 0)
 			if(!$this->insertarArbitros())
 				$r['error'] = 5.5;
-			
-		
 
 		return $r;
 	}
@@ -346,11 +352,12 @@ class Mopartido extends CI_Model
 				'arbitro2'=> $this->arbitros[1],
 				'arbitro3'=> $this->arbitros[2]
 			);
-
+			
 			if($this->db->insert('arbitrosPartidos', $i))
 			{
 				//Insertar faltas
-				return $this->db->where('arbitrospartido', $this->db->insert_id())->update('arbitrospartidosfaltas', $this->arbitrosFaltas);
+				return $this->db->where('arbitrospartido', $this->db->insert_id())
+				->update('arbitrospartidosfaltas', $this->arbitrosFaltas);
 			}
 			else return false;
 			

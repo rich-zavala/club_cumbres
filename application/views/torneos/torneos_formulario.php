@@ -67,11 +67,20 @@
 						</div>
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label for="sueldo3">Servicio de arbitraje</label>
+								<label for="sueldo3">Servicio arbitraje CH</label>
 								<input type="number" class="form-control" id="sueldo5" name="sueldo5" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->sueldo5?>" required>
 								<div class="help-block with-errors"></div>
 							</div>
 						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="sueldo3">Servicio arbitraje PRO</label>
+								<input type="number" class="form-control" id="sueldo6" name="sueldo6" step="any" data-minlength="2" data-error="Especifique este valor" value="<?=@$arbitros_sueldos->sueldo6?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
 						<div class="col-sm-4">
 							<div class="form-group">
 								<label for="sueldo3">Descuento por errores</label>
